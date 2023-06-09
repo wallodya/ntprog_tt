@@ -1,4 +1,6 @@
 node_modules
+__pycache__
+env-aide
 
 .idea/misc.xml
 .idea/vcs.xml

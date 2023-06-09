@@ -3,11 +3,11 @@ from __future__ import annotations
 import abc
 import asyncio
 import decimal
-from typing import TypeVar
+from typing import List, TypeVar
 
 import pydantic
 
-from server.enums import ClientMessageType, ServerMessageType
+from enums import ClientMessageType, ServerMessageType
 
 
 def snake_to_camel(snake_str: str) -> str:
@@ -24,7 +24,7 @@ class Envelope(pydantic.BaseModel, abc.ABC):
         alias_generator = snake_to_camel
         allow_population_by_field_name = True
 
-    message_type: ClientMessageType | ServerMessageType
+    # message_type: ClientMessageType | ServerMessageType
     message: dict
 
     @abc.abstractmethod
@@ -44,7 +44,7 @@ class Connection(pydantic.BaseModel):
     class Config:
         arbitrary_types_allowed = True
 
-    subscriptions: list[asyncio.Task] = []
+    subscriptions: List[asyncio.Task] = []
 
 
 class Quote(pydantic.BaseModel):

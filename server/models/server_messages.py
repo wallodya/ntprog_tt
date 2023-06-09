@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import uuid
-from typing import TypeVar
+from typing import List, TypeVar
 
 import bidict as bidict
 
-from server import enums
-from server.models.base import Envelope, Message, Quote
+import enums
+from models.base import Envelope, Message, Quote
 
 
 class ServerMessage(Message):
@@ -30,7 +30,7 @@ class ExecutionReport(ServerMessage):
 class MarketDataUpdate(ServerMessage):
     subscription_id: uuid.UUID
     instrument: enums.Instrument
-    quotes: list[Quote]
+    quotes: List[Quote]
 
 
 class ServerEnvelope(Envelope):
