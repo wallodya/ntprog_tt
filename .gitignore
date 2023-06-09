@@ -1,0 +1,7 @@
+node_modules
+
+.idea/misc.xml
+.idea/vcs.xml
+.idea/workspace.xml
+
+*.egg-info
