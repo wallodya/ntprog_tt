@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, ReactNode } from "react"
+import React, { HTMLAttributes, LegacyRef, ReactNode, forwardRef } from "react"
 import { twMerge } from "tailwind-merge"
 
 type ButtonType = "primary" | "secondary" | "text"
@@ -9,7 +9,7 @@ type ButtonProps = {
 } & HTMLAttributes<HTMLButtonElement>
 
 const useDefaultButtonClasses = (type: ButtonType) => {
-	const baseClasses = "px-4 py-1 rounded-lg text-sma font-semibold transition "
+	const baseClasses = "px-4 py-2 rounded-lg text-sma font-semibold transition "
 	switch (type) {
 		case "primary": {
 			return (
@@ -26,13 +26,17 @@ const useDefaultButtonClasses = (type: ButtonType) => {
 	}
 }
 
-const Button = ({ children, className, type, ...props }: ButtonProps) => {
+const Button = forwardRef(({ children, className, type, ...props }: ButtonProps, ref) => {
 	const defaultClasses = useDefaultButtonClasses(type)
 	return (
-		<button className={twMerge(defaultClasses, className)} {...props}>
+		<button
+			ref={ref as LegacyRef<HTMLButtonElement>}
+			className={twMerge(defaultClasses, className)}
+			{...props}
+		>
 			{children}
 		</button>
 	)
-}
+})
 
 export default Button
