@@ -1,5 +1,5 @@
 import { Envelope, Message } from "@models/Base"
-import { ClientMessageType, Instrument, OrderSide } from "Enums"
+import { ClientMessageType, Instrument, OrderSide } from "types/Enums"
 import Decimal from "decimal.js"
 
 export interface ClientEnvelope extends Envelope {

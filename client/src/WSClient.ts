@@ -4,7 +4,7 @@ import {
 	Instrument,
 	OrderSide,
 	ServerMessageType,
-} from "Enums"
+} from "types/Enums"
 import Decimal from "decimal.js"
 import { ServerEnvelope } from "@models/ServerMessages"
 
