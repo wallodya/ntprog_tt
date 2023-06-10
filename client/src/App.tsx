@@ -1,9 +1,16 @@
-import React from "react"
+import PageLayout from "components/layouts/PageLayout"
+import Bids from "features/bids/Bids"
+import Plot from "features/plot/Plot"
+import AuthProvider from "features/auth/AuthProvider"
 
 function App() {
 	return (
-		<div>
-		</div>
+		<AuthProvider>
+			<PageLayout>
+                <Plot/>
+                <Bids/>
+            </PageLayout>
+		</AuthProvider>
 	)
 }
 

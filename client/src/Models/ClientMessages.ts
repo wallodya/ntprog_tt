@@ -1,4 +1,4 @@
-import { Envelope, Message } from "@models/Base"
+import { Envelope, Message } from "./Base"
 import { ClientMessageType, Instrument, OrderSide } from "types/Enums"
 import Decimal from "decimal.js"
 

@@ -20,18 +20,8 @@
     "noEmit": true,
     "jsx": "react-jsx", 
     "baseUrl": "./src",
-    "paths": {
-        "@models/*":["./models/*"],
-        "@components/*":["./components/*"],
-        "@bids": ["./features/bids/*"],
-        "@plot": ["./features/plot/*"],
-        "@auth": ["./features/auth/*"],
-        "@ticker": ["./features/ticker/*"],
-        "types": ["./types/*"],
-        "@utils": ["./utils/*"]
-    }
   },
   "include": [
-    "src"
+    "src/**/*"
   ]
 }
