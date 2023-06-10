@@ -1,26 +1,24 @@
-import {Envelope, Message} from "./Base";
-import {ClientMessageType, Instrument, OrderSide} from "../Enums";
-import Decimal from "decimal.js";
+import { Envelope, Message } from "@models/Base"
+import { ClientMessageType, Instrument, OrderSide } from "Enums"
+import Decimal from "decimal.js"
 
 export interface ClientEnvelope extends Envelope {
-    messageType: ClientMessageType
+	messageType: ClientMessageType
 }
 
-export interface ClientMessage extends Message {
-
-}
+export interface ClientMessage extends Message {}
 
 export interface SubscribeMarketData extends ClientMessage {
-    instrument: Instrument
+	instrument: Instrument
 }
 
 export interface UnsubscribeMarketData extends ClientMessage {
-    subscriptionId: string
+	subscriptionId: string
 }
 
 export interface PlaceOrder extends ClientMessage {
-    instrument: Instrument
-    side: OrderSide
-    amount: Decimal
-    price: Decimal
+	instrument: Instrument
+	side: OrderSide
+	amount: Decimal
+	price: Decimal
 }
