@@ -27,7 +27,8 @@
         "@plot": ["./features/plot/*"],
         "@auth": ["./features/auth/*"],
         "@ticker": ["./features/ticker/*"],
-        "types": ["./types/*"]
+        "types": ["./types/*"],
+        "@utils": ["./utils/*"]
     }
   },
   "include": [
