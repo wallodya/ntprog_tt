@@ -14,11 +14,11 @@ const useDefaultButtonClasses = (type: ButtonType) => {
 		case "primary": {
 			return (
 				baseClasses +
-				"border border-gray-100  bg-gray-100 text-gray-700 hover:bg-transparent hover:text-gray-100"
+				"border border-neutral-900 bg-neutral-900 text-neutral-100 hover:bg-transparent hover:text-neutral-900"
 			)
 		}
 		case "secondary": {
-			return baseClasses + "border border-gray-100 text-gray-100 hover:bg-gray-100 hover:text-gray-700"
+			return baseClasses + "border border-neutral-900 text-neutral-900 hover:bg-neutral-900 hover:text-neutral-100"
 		}
 		case "text": {
 			return baseClasses + ""
