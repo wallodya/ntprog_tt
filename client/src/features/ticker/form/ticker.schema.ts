@@ -4,7 +4,7 @@ import { z } from "zod";
 const orderSideValues = Object.values(OrderSide).filter(Number.isInteger)
 
 export const tickerSchema = z.object({
-	instrument: z.string(),
+	instrument: z.string().transform(Number),
 	amount: z
 		.string()
 		.transform(Number)

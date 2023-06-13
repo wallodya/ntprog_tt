@@ -1,9 +1,8 @@
 import Decimal from "decimal.js"
-import { ClientMessage } from "./ClientMessages"
-import { ServerMessage } from "./ServerMessages"
+import { ClientMessageType, ServerMessageType } from "types/Enums"
 
 export interface Envelope {
-	messageType: ClientMessage | ServerMessage
+	messageType: ClientMessageType | ServerMessageType
 	message: object
 }
 

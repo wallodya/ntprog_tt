@@ -1,22 +1,24 @@
-import { ClientMessage } from "models/ClientMessages"
-import {
-	ClientMessageType,
-	Instrument,
-	OrderSide,
-	ServerMessageType,
-} from "types/Enums"
 import Decimal from "decimal.js"
+import { ClientEnvelope, PlaceOrder } from "models/ClientMessages"
 import { ServerEnvelope } from "models/ServerMessages"
+import {
+    ClientMessageType,
+    Instrument,
+    OrderSide,
+    ServerMessageType,
+} from "types/Enums"
 
 export default class WSConnector {
 	connection: WebSocket | undefined
+	private _url: string
 
 	constructor() {
 		this.connection = undefined
+		this._url = this.serverURL
 	}
 
-	connect = () => {
-		this.connection = new WebSocket("ws://127.0.0.1:3000/ws/")
+	connect() {
+		this.connection = new WebSocket(this._url)
 		this.connection.onclose = () => {
 			this.connection = undefined
 		}
@@ -40,15 +42,15 @@ export default class WSConnector {
 		}
 	}
 
-	disconnect = () => {
+	disconnect() {
 		this.connection?.close()
 	}
 
-	send = (message: ClientMessage) => {
+	send(message: ClientEnvelope) {
 		this.connection?.send(JSON.stringify(message))
 	}
 
-	subscribeMarketData = (instrument: Instrument) => {
+	subscribeMarketData(instrument: number) {
 		this.send({
 			messageType: ClientMessageType.subscribeMarketData,
 			message: {
@@ -57,7 +59,7 @@ export default class WSConnector {
 		})
 	}
 
-	unsubscribeMarketData = (subscriptionId: string) => {
+	unsubscribeMarketData(subscriptionId: string) {
 		this.send({
 			messageType: ClientMessageType.unsubscribeMarketData,
 			message: {
@@ -66,12 +68,7 @@ export default class WSConnector {
 		})
 	}
 
-	placeOrder = (
-		instrument: Instrument,
-		side: OrderSide,
-		amount: Decimal,
-		price: Decimal
-	) => {
+	placeOrder({ instrument, side, amount, price }: PlaceOrder) {
 		this.send({
 			messageType: ClientMessageType.placeOrder,
 			message: {
@@ -81,5 +78,30 @@ export default class WSConnector {
 				price,
 			},
 		})
+	}
+
+    cancelOrder(orderId: string) {
+        this.send({
+            messageType: ClientMessageType.cancelOrder,
+            message: {
+                orderId
+            }
+        })
+    }
+
+	get serverURL() {
+		const env = process.env.NODE_ENV
+		if (!env) {
+			throw new Error("NODE_ENV enviroment variable is not present")
+		}
+
+		if (env === "test") {
+			return "ws://127.0.0.1:1234/"
+		}
+
+		if (!process.env.REACT_APP_SERVER_WS_URL) {
+			throw new Error("Env. variable for server socket url is not set")
+		}
+		return process.env.REACT_APP_SERVER_WS_URL
 	}
 }

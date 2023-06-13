@@ -1,6 +1,32 @@
 import FormFieldError from "components/ui/FormFieldError"
 import { useTicker } from "../TickerFormProvider"
 
+const MOCK_INSTRUMENT_DATA: {
+    instrument: number,
+    name: string
+}[] = [
+    {
+        instrument: 1,
+        name: "CHN/RUB",
+    },
+    {
+        instrument: 2,
+        name: "EUR/RUB",
+    },
+    {
+        instrument: 3,
+        name: "EUR/USD",
+    },
+    {
+        instrument: 4,
+        name: "USD/RUB",
+    },
+    {
+        instrument: 5,
+        name: "BYN/RUB",
+    },
+]
+
 const InstrumentInput = () => {
     const {
 		register,
@@ -22,11 +48,11 @@ const InstrumentInput = () => {
 				{...register("instrument")}
 				className="px-5 py-3 mb-12 rounded-lg border border-neutral-500/50 text-neutral-900 bg-transparent"
 			>
-				<option value={"CHN/RUB"}>CHN/RUB</option>
-				<option value={"EUR/RUB"}>EUR/RUB</option>
-				<option value={"EUR/USD"}>EUR/USD</option>
-				<option value={"USD/RUB"}>USD/RUB</option>
-				<option value={"BYN/RUB"}>BYN/RUB</option>
+                {
+                    MOCK_INSTRUMENT_DATA.map(i => 
+                        <option key={i.instrument} value={i.instrument}>{i.name}</option>
+                    )
+                }
 			</select>
 		</>
 	)
