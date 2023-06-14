@@ -4,6 +4,7 @@ import { MOCK_BID_DATA } from "./__mock__"
 import columns from "./bids-table-columns"
 
 export const useBidsTable = () => {
+    //TODO need to fetch this from server
     const data = MOCK_BID_DATA
 
     const [sorting, setSorting] = useState<SortingState>([])
