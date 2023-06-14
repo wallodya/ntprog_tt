@@ -1,12 +1,6 @@
-import Decimal from "decimal.js"
 import { ClientEnvelope, PlaceOrder } from "models/ClientMessages"
 import { ServerEnvelope } from "models/ServerMessages"
-import {
-    ClientMessageType,
-    Instrument,
-    OrderSide,
-    ServerMessageType,
-} from "types/Enums"
+import { ClientMessageType, ServerMessageType } from "types/Enums"
 
 export default class WSConnector {
 	connection: WebSocket | undefined
@@ -21,11 +15,17 @@ export default class WSConnector {
 		this.connection = new WebSocket(this._url)
 		this.connection.onclose = () => {
 			this.connection = undefined
+            console.log("Closed connection to socket on ", this._url)
 		}
 
-		this.connection.onerror = () => {}
+		this.connection.onerror = () => {
+            this.connection = undefined
+            console.log("Error while connecting to socket on ", this._url)
+        }
 
-		this.connection.onopen = () => {}
+		this.connection.onopen = () => {
+            console.log("Connected to socket on ", this._url)
+        }
 
 		this.connection.onmessage = event => {
 			const message: ServerEnvelope = JSON.parse(event.data)
@@ -43,6 +43,9 @@ export default class WSConnector {
 	}
 
 	disconnect() {
+        if (!this.connection) {
+            return
+        }
 		this.connection?.close()
 	}
 

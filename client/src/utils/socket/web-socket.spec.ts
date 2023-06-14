@@ -399,10 +399,10 @@ describe("WSConnector connection", () => {
             const data = JSON.stringify("hello")
             server.send(data)
 
-            // console.log(spyDispatch.mock.calls)
+            console.log(spyDispatch.mock.calls)
             expect(spyDispatch).toBeCalledTimes(1)
-            expect(spyDispatch.mock.calls[1][0].type).toBe("message")
-            expect(spyDispatch.meck.calls[1][0].data).toBe(data)
+            expect(spyDispatch.mock.calls[0][0].type).toBe("message")
+            expect((spyDispatch.mock.calls[0][0] as MessageEvent)["data"]).toBe(data)
         })
     })
 })

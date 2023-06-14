@@ -1,8 +1,8 @@
-import { Instrument, OrderStatus } from "types/Enums"
+import { Instrument, OrderStatus, ServerMessageType } from "types/Enums"
 import { Envelope, Message, Quote } from "./Base"
 
 export interface ServerEnvelope extends Envelope {
-	messageType: ServerMessage
+	messageType: ServerMessageType
 }
 
 export interface ServerMessage extends Message {}
