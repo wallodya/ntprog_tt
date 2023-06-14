@@ -1,4 +1,4 @@
-import { Instrument, OrderStatus, ServerMessageType } from "types/Enums"
+import { OrderStatus, ServerMessageType } from "types/Enums"
 import { Envelope, Message, Quote } from "./Base"
 
 export type ServerEnvelope =
@@ -39,7 +39,7 @@ export interface ExecutionReportEnvelope extends Envelope {
 
 export interface MarketDataUpdate extends ServerMessage {
 	subscriptionId: string
-	instrument: Instrument
+	instrument: string
 	quotes: [Quote]
 }
 

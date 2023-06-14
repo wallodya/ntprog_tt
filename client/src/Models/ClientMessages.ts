@@ -1,5 +1,5 @@
-import { Envelope } from "./Base"
-import { ClientMessageType, Instrument, OrderSide } from "types/Enums"
+import { Envelope, Instrument } from "./Base"
+import { ClientMessageType, OrderSide } from "types/Enums"
 import Decimal from "decimal.js"
 
 export type ClientEnvelope =
@@ -9,7 +9,7 @@ export type ClientEnvelope =
 	| CancelOrderEnvelope
 
 export interface SubscribeMarketData {
-    instrument: Instrument
+    instrument: Instrument["instrumentId"]
 }
 
 export interface SubscribeMarketDataEnvelope extends Envelope {
@@ -27,7 +27,7 @@ export interface UnsubscribeMarketDataEnvelope extends Envelope {
 }
 
 export interface PlaceOrder {
-    instrument: Instrument
+    instrument: Instrument["instrumentId"]
 	side: OrderSide
 	amount: Decimal
 	price: Decimal

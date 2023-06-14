@@ -10,7 +10,7 @@ const NewBidButton = () => {
 				<Button type="primary">New bid</Button>
 			</Dialog.Trigger>
 			<Dialog.Portal>
-				<Dialog.Overlay className="fixed h-screen w-screen inset-0 bg-gray-950/70"/>
+				<Dialog.Overlay className="fixed z-40 h-screen w-screen inset-0 bg-gray-950/70"/>
 				<Dialog.Content>
 					<Ticker/>
 				</Dialog.Content>

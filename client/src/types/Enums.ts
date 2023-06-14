@@ -23,9 +23,3 @@ export enum OrderStatus {
     rejected,
     cancelled,
 }
-
-export enum Instrument {
-    eur_usd = 1,
-    eur_rub,
-    usd_rub,
-}

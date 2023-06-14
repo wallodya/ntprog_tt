@@ -14,3 +14,13 @@ export interface Quote {
 	minAmount: Decimal
 	maxAmount: Decimal
 }
+
+export interface Instrument {
+    instrumentId: number,
+    name: string,
+}
+
+export interface MarketSubscription {
+    subscriptionId: string,
+    instrument: Instrument,
+}
