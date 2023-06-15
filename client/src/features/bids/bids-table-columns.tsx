@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { Bid } from "./Bids"
+import { Order } from "./Bids"
 import AmountCell from "./cells/AmountCell"
 import IDCell from "./cells/IDCell"
 import InstrumentCell from "./cells/InstrumentCell"
@@ -7,11 +7,12 @@ import PriceCell from "./cells/PriceCell"
 import SideCell from "./cells/SideCell"
 import StatusCell from "./cells/StatusCell"
 import TimeCell from "./cells/TimeCell"
+import CancelOrderCell from "./cells/CancelOrderCell"
 
-const columnHelper = createColumnHelper<Bid>()
+export const columnHelper = createColumnHelper<Order>()
 
 const columns = [
-	columnHelper.accessor("bid_id", {
+	columnHelper.accessor("orderId", {
         header: () => <div className="w-full text-center">ID</div>,
 		cell: info => <IDCell id={info.getValue()}/>,
         enableSorting: false,
@@ -46,6 +47,7 @@ const columns = [
         header: () => <div className="w-full text-left">Instrument</div>,
 		cell: info => <InstrumentCell instrument={info.getValue()}/>,
 	}),
+
 ]
 
 export default columns

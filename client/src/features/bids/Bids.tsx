@@ -6,8 +6,8 @@ import Decimal from "decimal.js"
 import { OrderSide, OrderStatus } from "types/Enums"
 import { useBidsTable } from "./bids.hooks"
 
-export type Bid = {
-	bid_id: string
+export type Order = {
+	orderId: string
 	created_at: number
 	updated_at: number
 	status: OrderStatus
@@ -15,6 +15,7 @@ export type Bid = {
 	price: Decimal
 	amount: number
 	instrument: string
+    userId: string
 }
 
 //TODO Sorting and filtering

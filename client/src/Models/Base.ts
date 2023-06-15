@@ -9,10 +9,11 @@ export interface Envelope {
 export interface Message {}
 
 export interface Quote {
+    timestamp: number
 	bid: Decimal
 	offer: Decimal
-	minAmount: Decimal
-	maxAmount: Decimal
+	bidAmount: Decimal
+	offerAmount: Decimal
 }
 
 export interface Instrument {

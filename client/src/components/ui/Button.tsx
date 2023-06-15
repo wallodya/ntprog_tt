@@ -1,7 +1,7 @@
 import React, { HTMLAttributes, LegacyRef, ReactNode, forwardRef } from "react"
 import { twMerge } from "tailwind-merge"
 
-type ButtonType = "primary" | "secondary" | "text"
+type ButtonType = "primary" | "secondary" | "tetriary"
 
 type ButtonProps = {
 	children: ReactNode
@@ -20,8 +20,8 @@ const useDefaultButtonClasses = (type: ButtonType) => {
 		case "secondary": {
 			return baseClasses + "border border-neutral-900 text-neutral-900 hover:bg-neutral-900 hover:text-neutral-100"
 		}
-		case "text": {
-			return baseClasses + ""
+		case "tetriary": {
+			return baseClasses + "border border-neutral-900 text-neutral-900 hover:border-neutral-900/50 hover:text-neutral-900/50"
 		}
 	}
 }

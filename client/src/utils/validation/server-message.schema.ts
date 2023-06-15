@@ -8,7 +8,7 @@ const serverMessageTypes = Object.values(ServerMessageType).filter(
 
 export const serverMessageSchema = z
 	.object({
-		message_type: z.number().refine(serverMessageTypes.includes),
+		message_type: z.number().refine(num => serverMessageTypes.includes(num)),
 		message: z.object({}),
 	})
 	.transform(data => ({
@@ -45,14 +45,16 @@ export const marketDataUpdateMessageSchema = z
 				.object({
 					bid: z.number().transform(num => new Decimal(num)),
 					offer: z.number().transform(num => new Decimal(num)),
-					min_amount: z.number().transform(num => new Decimal(num)),
-					max_amount: z.number().transform(num => new Decimal(num)),
+					bid_amount: z.number().transform(num => new Decimal(num)),
+					offer_amount: z.number().transform(num => new Decimal(num)),
+                    timestamp: z.number().max(Date.now()).min(0)
 				})
 				.transform(data => ({
 					bid: data.bid,
                     offer: data.offer,
-					minAmount: data.min_amount,
-					maxAmount: data.max_amount,
+					bidAmount: data.bid_amount,
+					offerAmount: data.offer_amount,
+                    timestamp: data.timestamp
 				}))
 		),
 	})

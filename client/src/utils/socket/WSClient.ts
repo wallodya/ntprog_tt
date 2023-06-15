@@ -1,7 +1,10 @@
+import { Quote } from "models/Base"
 import { ClientEnvelope, PlaceOrder } from "models/ClientMessages"
 import { ServerEnvelope } from "models/ServerMessages"
+import { Dispatch, SetStateAction } from "react"
 import { toast } from "react-toastify"
 import { ClientMessageType, ServerMessageType } from "types/Enums"
+import { Observer } from "utils/observer/observer"
 import {
     ServerEnvelopeUnsafe,
 	errorInfoMessageSchema,
@@ -14,10 +17,13 @@ import {
 export default class WSConnector {
 	connection: WebSocket | undefined
 	private _url: string
+    private _marketSubscriptionObserver: Observer<Dispatch<SetStateAction<Quote[]>>, Quote[]>
 
 	constructor() {
 		this.connection = undefined
 		this._url = this.serverURL
+
+        this._marketSubscriptionObserver = new Observer<Dispatch<SetStateAction<Quote[]>>, Quote[]>((sub, data) => sub(data))
 	}
 
 	connect() {
@@ -92,19 +98,19 @@ export default class WSConnector {
 	}
 
 	private handleServerMessage(message: string) {
-		const data = this.validateServerEnvelope(JSON.parse(message))
-
+        const data = this.validateServerEnvelope(JSON.parse(message))
+        
 		if (!data) {
-			return
+            return
 		}
-
+        
         if (this.validateServerMessage(data)) {
             return
         }
-
+        
 		this.callMessageHandler(data as ServerEnvelope)
 	}
-
+    
 	private validateServerEnvelope(obj: object) {
 		const msg = serverMessageSchema.safeParse(obj)
 
@@ -164,10 +170,18 @@ export default class WSConnector {
                 return
             }
 			case ServerMessageType.marketDataUpdate: {
+                this._marketSubscriptionObserver.notify(
+					envelope.message.subscriptionId,
+					envelope.message.quotes
+				)
                 return
             }
 		}
 	}
+
+    get marketSubscriptionObserver() {
+        return this._marketSubscriptionObserver
+    }
 
 	private get serverURL() {
 		const env = process.env.NODE_ENV

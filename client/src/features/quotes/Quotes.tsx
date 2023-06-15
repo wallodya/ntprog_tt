@@ -2,7 +2,9 @@ import Card from "components/ui/Card"
 import { MarketSubscription } from "models/Base"
 
 import Button from "components/ui/Button"
-import SubscriptionQuotes from "./SubscriptionQuotes"
+import SubscriptionQuotes from "./components/SubscriptionQuotes"
+import { useAuth } from "features/auth/AuthProvider"
+import UserSubcriptions from "./components/UserSubscription"
 
 const MOCK_SUBS: MarketSubscription[] = [
 	{
@@ -28,21 +30,24 @@ const MOCK_SUBS: MarketSubscription[] = [
 	},
 ]
 
+const SignInPrompt = () => {
+	return (
+		<div>
+			<h2 className="text-xl font-bold">Sign in to recieve latest quotes updates</h2>
+		</div>
+	)
+}
+
 const Quotes = () => {
+	const userData = useAuth()
+
 	return (
 		<Card>
-			<div className="mb-8 w-full flex justify-between items-baseline">
-				<h2 className="font-bold text-2xl">Subscriptions</h2>
-				<Button type="primary">New subscription</Button>
-			</div>
-			<div className="flex gap-4">
-				{MOCK_SUBS.map(subscription => (
-					<SubscriptionQuotes
-						subscription={subscription}
-						key={subscription.subscriptionId}
-					/>
-				))}
-			</div>
+			{userData.user ? (
+				<UserSubcriptions subscriptions={userData.subscriptions} />
+			) : (
+				<SignInPrompt />
+			)}
 		</Card>
 	)
 }
