@@ -11,57 +11,88 @@ import { useEffect, useState } from "react"
 import { MarketSubscription } from "models/Base"
 import Card from "components/ui/Card"
 import Button from "components/ui/Button"
+import { useSocket } from "utils/socket/SocketProvider"
 // import MarketQuotes from "features/quotes/MarketQuotes"
 
-
 const TickerForm = () => {
-
-    const [subscription, setSubscription] = useState<MarketSubscription | null>()
+	const [subscription, setSubscription] =
+		useState<MarketSubscription | null>()
 	const { handleSubmit, watch } = useTicker()
-    const userData = useAuth()
+	const userData = useAuth()
+    const socket = useSocket()
 
-    useEffect(() => {
-        if (!userData.user) {
-            return
-        }
-        const { unsubscribe } = watch((values) => {
-            setSubscription(
+	useEffect(() => {
+		if (!userData.user) {
+			return
+		}
+		const { unsubscribe } = watch(values => {
+			setSubscription(
 				userData.subscriptions.find(
-					sub => sub.instrument.instrumentId === Number(values.instrument)
+					sub =>
+						sub.instrument.instrumentId ===
+						Number(values.instrument)
 				) ?? null
 			)
-        })
-        return () => unsubscribe()
-    },[])
+		})
+		return () => unsubscribe()
+	}, [])
+
+    const handleSubscribe = () => {
+        if (socket.connection && subscription) {
+            socket.subscribeMarketData(subscription.instrument.instrumentId)
+        }
+    }
 
 	return (
 		<form
-			className="flex flex-col"
+			className="flex flex-col items-center md:grid grid-cols-2 grid-rows-5 gap-8"
 			id="ticker-form"
 			onSubmit={handleSubmit}
 		>
-			<InstrumentInput/>
+			<div className="col-start-1 row-start-1 row-span-2">
+				<InstrumentInput />
+			</div>
+			<div className="col-start-1 row-start-3 row-span-2">
+				<AmountInput />
+			</div>
 
-			<AmountInput />
-
-			{subscription ? (
-				<SubscriptionQuotes subscription={subscription} />
-			) : (
-				<Card className="mb-12 px-8 w-full border-2 border-neutral-900">
-                    <h3 className="mb-2 font-semibold text-neutral-900 text-lg">
-					    No data
-				    </h3>
-                    <p className="mb-4 text-sm font-semibold text-neutral-900/50 self-start">
-						Subscribe to market updates<br/> 
-                        to recieve instruments latest market quotes
-					</p>
-                    <Button type="secondary" className="text-sm px-2 py-2">Subscribe</Button>
-                </Card>
-			)}
-
-			<PriceInput />
-
-			<TickerOrderActions />
+			<div className="relative col-start-2 row-start-1 row-span-2 self-start">
+				<div
+					className={
+						"absolute bottom-1/2 right-1/2 translate-x-2/4 translate-y-2/4 ml-auto"
+					}
+				>
+					{subscription && (
+						<SubscriptionQuotes subscription={subscription} />
+					)}
+				</div>
+				<div className={`${subscription ? "opacity-0" : ""}`}>
+					<Card className="px-8 w-full border-2 border-neutral-900">
+						<h3 className="mb-2 font-semibold text-neutral-900 text-lg">
+							No data
+						</h3>
+						<p className="mb-4 text-sm font-semibold text-neutral-900/50 self-start">
+							Subscribe to market updates
+							<br />
+							to recieve instruments latest market quotes
+						</p>
+						<Button
+							role="none"
+							onClick={handleSubscribe}
+							type="secondary"
+							className="text-sm px-2 py-2"
+						>
+							Subscribe
+						</Button>
+					</Card>
+				</div>
+			</div>
+			<div className="clos-start-2 row-start-3 row-span-2">
+				<PriceInput />
+			</div>
+			<div className="col-start-2 row-start-5 col-span-1">
+				<TickerOrderActions />
+			</div>
 		</form>
 	)
 }

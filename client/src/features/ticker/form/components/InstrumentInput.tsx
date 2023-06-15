@@ -44,7 +44,7 @@ const InstrumentInput = () => {
 			<FormFieldError err={instrumentFieldError} />
 			<select
 				{...register("instrument")}
-				className="px-5 py-3 mb-12 rounded-lg border border-neutral-500/50 text-neutral-900 bg-transparent"
+				className="px-5 py-3 w-full mb-12 rounded-lg border border-neutral-500/50 text-neutral-900 bg-transparent"
 			>
                 {
                     MOCK_INSTRUMENT_DATA.map(i => 

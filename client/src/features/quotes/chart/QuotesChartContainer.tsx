@@ -5,7 +5,7 @@ import LineChart from './LineChart'
 
 const ChartContainer = ({quotes}:{quotes: Quote[] | null}) => {
   return (
-		<Card className="h-[40vh] flex flex-col border-2 border-neutral-900">
+		<Card className="h-fit md:h-[40vh] flex flex-col border-2 border-neutral-900">
 			{quotes ? (
 				<LineChart quotes={quotes} />
 			) : (

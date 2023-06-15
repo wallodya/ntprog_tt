@@ -33,7 +33,7 @@ const UserSubcriptions = ({
 				<Button type="primary">New subscription</Button>
 			</div>
             <QuotesChart quotes={chartData}/>
-			<div className="mt-8 flex gap-4">
+			<div className="mt-8 flex gap-4 overflow-x-scroll">
 				{subscriptions.map(subscription => (
 					<SubscriptionQuotes
                         standalone

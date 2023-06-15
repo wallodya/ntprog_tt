@@ -1,7 +1,7 @@
 import Button from "components/ui/Button"
 import Card from "components/ui/Card"
 import { MarketSubscription, Quote } from "models/Base"
-import { useMarketSubscription } from "../use-subscriptions.hook"
+import { useMarketSubscription } from "../subscriptions.hooks"
 import QuotePrice from "./QuotePrice"
 import UnsubscribeButton from "./UnsubscribeButton"
 
@@ -22,7 +22,7 @@ const SubscriptionQuotes = ({
 	)
 
 	return (
-		<Card className="mb-12 px-8 w-fit border-2 border-neutral-900">
+		<Card className="px-8 w-fit border-2 border-neutral-900">
 			<div className="mb-6 flex item-baseline justify-between gap-2">
 				<h3 className="font-semibold text-neutral-900 text-lg">
 					{subscription.instrument.name}

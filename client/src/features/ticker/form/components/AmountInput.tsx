@@ -21,7 +21,7 @@ const AmountInput = () => {
 			<FormInput
 				placeholder="Amount"
 				{...register("amount")}
-				className="mb-12"
+				className="mb-12 w-full"
 			/>
 		</>
 	)

@@ -44,7 +44,7 @@ const PriceInput = () => {
 				Your price
 			</label>
 			<FormFieldError err={priceFieldError} />
-			<div className="mb-12 flex py-3 rounded-lg border border-neutral-500/50 text-neutral-900 bg-transparent focus-within:outline focus-within:outline-blue-500">
+			<div className="mb-12 w-full flex py-3 rounded-lg border border-neutral-500/50 text-neutral-900 bg-transparent focus-within:outline focus-within:outline-blue-500">
 				<span className="ml-5 mr-2 text-neutral-400">$</span>
 				<input
 					name="price-dollars"
@@ -52,10 +52,10 @@ const PriceInput = () => {
 					onChange={handleDollarsChange}
 					placeholder="00"
 					id=""
-					className="text-right font-semibold text-neutral-900/80 bg-transparent focus:outline-none"
+					className="ml-auto text-right font-semibold text-neutral-900/80 bg-transparent focus:outline-none"
 					onKeyDown={preventNonDigitInput}
 				/>
-				<span className="mx-1 text- font-bold text-neutral-400">.</span>
+				<span className="mx-1 font-bold text-neutral-400">.</span>
 				<input
 					placeholder={"00"}
 					value={cents}
