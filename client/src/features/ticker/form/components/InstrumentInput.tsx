@@ -5,19 +5,19 @@ import { Instrument } from "models/Base"
 const MOCK_INSTRUMENT_DATA: Instrument[] = [
     {
         instrumentId: 1,
-        name: "CHN/RUB",
-    },
-    {
-        instrumentId: 2,
-        name: "EUR/RUB",
-    },
-    {
-        instrumentId: 3,
-        name: "EUR/USD",
+        name: "USD/RUB",
     },
     {
         instrumentId: 4,
-        name: "USD/RUB",
+        name: "CHN/RUB",
+    },
+    {
+        instrumentId: 3,
+        name: "EUR/RUB",
+    },
+    {
+        instrumentId: 2,
+        name: "EUR/USD",
     },
     {
         instrumentId: 5,

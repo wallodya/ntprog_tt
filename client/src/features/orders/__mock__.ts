@@ -1,6 +1,6 @@
 import Decimal from "decimal.js";
 import { OrderStatus, OrderSide } from "types/Enums";
-import { Order } from "./Bids";
+import { Order } from "./Orders";
 
 export const MOCK_BID_DATA: Order[] = [
     {

@@ -1,10 +1,8 @@
 import Card from "components/ui/Card"
 import { MarketSubscription } from "models/Base"
 
-import Button from "components/ui/Button"
-import SubscriptionQuotes from "./components/SubscriptionQuotes"
 import { useAuth } from "features/auth/AuthProvider"
-import UserSubcriptions from "./components/UserSubscription"
+import UserSubcriptions from "./components/UserSubscriptions"
 
 const MOCK_SUBS: MarketSubscription[] = [
 	{
@@ -44,7 +42,7 @@ const Quotes = () => {
 	return (
 		<Card>
 			{userData.user ? (
-				<UserSubcriptions subscriptions={userData.subscriptions} />
+                <UserSubcriptions subscriptions={userData.subscriptions} />
 			) : (
 				<SignInPrompt />
 			)}

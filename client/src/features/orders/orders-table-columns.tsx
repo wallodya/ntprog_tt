@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { Order } from "./Bids"
+import { Order } from "./Orders"
 import AmountCell from "./cells/AmountCell"
 import IDCell from "./cells/IDCell"
 import InstrumentCell from "./cells/InstrumentCell"
@@ -47,7 +47,10 @@ const columns = [
         header: () => <div className="w-full text-left">Instrument</div>,
 		cell: info => <InstrumentCell instrument={info.getValue()}/>,
 	}),
-
+    columnHelper.display({
+        id: "cancel-action",
+        cell: props => <CancelOrderCell order={props.row.original} />,
+    }),
 ]
 
 export default columns

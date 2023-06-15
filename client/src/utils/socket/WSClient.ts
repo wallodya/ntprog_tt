@@ -1,29 +1,20 @@
-import { Quote } from "models/Base"
+import EventEmitter from "events"
 import { ClientEnvelope, PlaceOrder } from "models/ClientMessages"
 import { ServerEnvelope } from "models/ServerMessages"
-import { Dispatch, SetStateAction } from "react"
 import { toast } from "react-toastify"
 import { ClientMessageType, ServerMessageType } from "types/Enums"
-import { Observer } from "utils/observer/observer"
-import {
-    ServerEnvelopeUnsafe,
-	errorInfoMessageSchema,
-	executionReportMessageSchema,
-	marketDataUpdateMessageSchema,
-	serverMessageSchema,
-	successInfoMessageSchema,
-} from "utils/validation/server-message.schema"
+import { ServerMessageValidator } from "utils/validation/ServerMessageValidator.ts"
 
-export default class WSConnector {
+export default class WSConnector extends EventEmitter {
 	connection: WebSocket | undefined
 	private _url: string
-    private _marketSubscriptionObserver: Observer<Dispatch<SetStateAction<Quote[]>>, Quote[]>
+    private _validator: ServerMessageValidator
 
 	constructor() {
+        super()
 		this.connection = undefined
-		this._url = this.serverURL
-
-        this._marketSubscriptionObserver = new Observer<Dispatch<SetStateAction<Quote[]>>, Quote[]>((sub, data) => sub(data))
+		this._url = this._serverURL
+        this._validator = new ServerMessageValidator()
 	}
 
 	connect() {
@@ -43,7 +34,10 @@ export default class WSConnector {
 		}
 
 		this.connection.onmessage = event => {
-			this.handleServerMessage(event.data)
+            const envelope = this._validate(event.data)
+			if (envelope) {
+                this._callMessageHandler(envelope)
+            }
 		}
 	}
 
@@ -97,63 +91,11 @@ export default class WSConnector {
 		})
 	}
 
-	private handleServerMessage(message: string) {
-        const data = this.validateServerEnvelope(JSON.parse(message))
-        
-		if (!data) {
-            return
-		}
-        
-        if (this.validateServerMessage(data)) {
-            return
-        }
-        
-		this.callMessageHandler(data as ServerEnvelope)
-	}
-    
-	private validateServerEnvelope(obj: object) {
-		const msg = serverMessageSchema.safeParse(obj)
-
-		if (!msg.success) {
-			return null
-		}
-
-		return msg.data
-	}
-
-    private validateServerMessage(envelope: ServerEnvelopeUnsafe) {
-        let isMessageValid: boolean
-		switch (envelope.messageType) {
-			case ServerMessageType.success: {
-				isMessageValid = successInfoMessageSchema.safeParse(
-					envelope.message
-				).success
-				break
-			}
-			case ServerMessageType.error: {
-				isMessageValid = errorInfoMessageSchema.safeParse(envelope.message).success
-				break
-			}
-			case ServerMessageType.executionReport: {
-				isMessageValid = executionReportMessageSchema.safeParse(
-					envelope.message
-				).success
-				break
-			}
-			case ServerMessageType.marketDataUpdate: {
-				isMessageValid = marketDataUpdateMessageSchema.safeParse(
-					envelope.message
-				).success
-				break
-			}
-            default: {
-                isMessageValid = false
-            }
-		}
-        return isMessageValid
+    private _validate(message: string) {
+        return this._validator.validate(message)
     }
 
-	private callMessageHandler(envelope: ServerEnvelope) {
+	private _callMessageHandler(envelope: ServerEnvelope) {
 		switch (envelope.messageType) {
 			case ServerMessageType.success: {
                 toast.success(envelope.message.info)
@@ -167,11 +109,15 @@ export default class WSConnector {
                 toast.info(
 					`Status for order ${envelope.message.orderId} changed to ${envelope.message.orderStatus}`
 				)
+                this.emit(
+					`execution-report`,
+					envelope.message
+				)
                 return
             }
 			case ServerMessageType.marketDataUpdate: {
-                this._marketSubscriptionObserver.notify(
-					envelope.message.subscriptionId,
+                this.emit(
+					`market-update-${envelope.message.subscriptionId}`,
 					envelope.message.quotes
 				)
                 return
@@ -179,11 +125,7 @@ export default class WSConnector {
 		}
 	}
 
-    get marketSubscriptionObserver() {
-        return this._marketSubscriptionObserver
-    }
-
-	private get serverURL() {
+	private get _serverURL() {
 		const env = process.env.NODE_ENV
 		if (!env) {
 			throw new Error("NODE_ENV enviroment variable is not present")

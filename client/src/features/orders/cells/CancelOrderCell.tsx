@@ -1,6 +1,6 @@
 import Button from "components/ui/Button"
 import React from "react"
-import { Order } from "../Bids"
+import { Order } from "../Orders"
 import { useAuth } from "features/auth/AuthProvider"
 import { OrderStatus } from "types/Enums"
 import { useSocket } from "utils/socket/SocketProvider"

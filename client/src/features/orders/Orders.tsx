@@ -4,7 +4,7 @@ import {
 import Card from "components/ui/Card"
 import Decimal from "decimal.js"
 import { OrderSide, OrderStatus } from "types/Enums"
-import { useBidsTable } from "./bids.hooks"
+import { useOrdersTable } from "./orders.hooks"
 
 export type Order = {
 	orderId: string
@@ -19,9 +19,9 @@ export type Order = {
 }
 
 //TODO Sorting and filtering
-const Bids = () => {
+const Orders = () => {
 
-    const table = useBidsTable()
+    const table = useOrdersTable()
 
 	return (
 		<Card>
@@ -76,4 +76,4 @@ const Bids = () => {
 	)
 }
 
-export default Bids
+export default Orders
