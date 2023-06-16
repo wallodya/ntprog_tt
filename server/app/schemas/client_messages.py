@@ -13,7 +13,7 @@ from models.base import Envelope, Message
 from models.server_messages import ServerMessageT
 
 if TYPE_CHECKING:
-    from server.ntpro_server import NTProServer
+    from server.app.utils.ntpro_server import NTProServer
 
 
 class ClientEnvelope(Envelope):

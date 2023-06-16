@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     import fastapi
 
     from server.models import client_messages
-    from server.ntpro_server import NTProServer
+    from server.app.utils.ntpro_server import NTProServer
 
 
 async def subscribe_market_data_processor(
