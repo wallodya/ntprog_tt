@@ -14,9 +14,8 @@ html = pathlib.Path('test.html').read_text()
 async def get():
     return fastapi.responses.HTMLResponse(html)
 
-
 @api.get('/static/{path}')
-async def get(path: pathlib.Path):
+async def get_static(path: pathlib.Path):
     static_file = (pathlib.Path('static') / path).read_text()
     mime_type, encoding = mimetypes.guess_type(path)
     return fastapi.responses.PlainTextResponse(static_file, media_type=mime_type)
