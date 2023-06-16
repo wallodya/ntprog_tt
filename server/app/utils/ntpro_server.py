@@ -33,5 +33,10 @@ class NTProServer:
 
     @staticmethod
     async def send(message: base.MessageT, websocket: fastapi.WebSocket):
-        await websocket.send_json(server_messages.ServerEnvelope(message_type=message.get_type(),
-                                                                 message=message.dict()).dict())
+        await websocket \
+            .send_json(server_messages \
+                .ServerEnvelope(
+                    message_type=message.get_type(),
+                    message=message.dict()
+                ).dict()
+            )

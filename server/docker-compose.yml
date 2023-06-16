@@ -4,13 +4,13 @@ services:
   ntprog_web:
     build: .
     # command: uvicorn app:api --reload --host 0.0.0.0 --port 8000
-    command: bash -c 'while !</dev/tcp/ntprog_postgres/5432; do sleep 1; done; uvicorn app.main:api --reload --host 0.0.0.0'
+    command: bash -c 'while !</dev/tcp/ntprog_postgres/5432; do sleep 1; done; uvicorn app.main:app --reload --host 0.0.0.0'
     volumes:
       - .:/app
     ports:
       - 8008:8000
     environment:
-      - DATABASE_URL=postgresql://ntprog_user:1234@db:5432/ntprog_exchange
+      - DATABASE_URL=postgresql://ntprog_user:1234@ntprog_postgres:5432/ntprog_exchange
     depends_on:
       - ntprog_postgres
   ntprog_postgres:
