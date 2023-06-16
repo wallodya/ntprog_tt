@@ -8,9 +8,9 @@ import bidict as bidict
 import fastapi
 import pydantic
 
-import message_processors, enums
-from models.base import Envelope, Message
-from models.server_messages import ServerMessageT
+from app.utils import message_processors, enums
+from app.schemas.base import Envelope, Message
+from app.schemas.server_messages import ServerMessageT
 
 if TYPE_CHECKING:
     from server.app.utils.ntpro_server import NTProServer

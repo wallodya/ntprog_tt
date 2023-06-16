@@ -5,8 +5,8 @@ from typing import List, TypeVar
 
 import bidict as bidict
 
-import enums
-from models.base import Envelope, Message, Quote
+from app.utils import enums
+from app.schemas.base import Envelope, Message, Quote
 
 
 class ServerMessage(Message):

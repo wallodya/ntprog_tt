@@ -2,7 +2,7 @@ import fastapi
 import pydantic
 import starlette.datastructures
 
-from models import client_messages, server_messages, base
+from app.schemas import client_messages, server_messages, base
 
 
 class NTProServer:
