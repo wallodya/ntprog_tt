@@ -1,6 +1,12 @@
-from app.db import Base
-from .instrument import Instrument
-from .market_subscription import MarketSubscription
-from .user import Person
-from .order import Order
-from .qoute import Quote
+from app.db import Base, database
+
+
+def create_model_meta(tablename: str):
+    return type(
+        "Meta", (),
+        {
+            "tablename": tablename,
+            "metadata": Base.metadata,
+            "database": database
+        }
+    )

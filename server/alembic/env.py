@@ -5,8 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from app.db import DATABASE_URL
-from app.models.base import Base    
+from app.db import DATABASE_URL, Base  
 
 
 # this is the Alembic Config object, which provides
