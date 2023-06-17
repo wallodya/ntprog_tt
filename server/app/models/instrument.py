@@ -1,11 +1,11 @@
 import ormar
 
-from app.db import metadata, database
+from app.db import Base, database
 
 class Instrument(ormar.Model):
     class Meta:
         tablename = "Instrument"
-        metadata = metadata
+        metadata = Base.metadata
         database = database
 
     instrument_id: int = ormar.Integer(primary_key=True)

@@ -2,6 +2,7 @@ import os
 
 import databases
 import sqlalchemy
+from sqlalchemy.ext.declarative import declarative_base
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
@@ -13,4 +14,4 @@ engine = sqlalchemy.create_engine(
     DATABASE_URL, echo=True
 )
 
-metadata.create_all(engine)
+Base = declarative_base(bind=engine)

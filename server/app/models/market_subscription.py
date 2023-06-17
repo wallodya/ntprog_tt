@@ -1,6 +1,6 @@
 import ormar
 
-from app.db import metadata, database
+from app.db import Base, database
 from app.models.instrument import Instrument
 from app.models.user import Person
 
@@ -8,7 +8,7 @@ from app.models.user import Person
 class MarketSubscription(ormar.Model):
     class Meta:
         tablename = "Subscription"
-        metadata = metadata
+        metadata = Base.metadata
         database = database
 
     id: int = ormar.Integer(primary_key=True)
