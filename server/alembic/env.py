@@ -5,7 +5,8 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from app.db import DATABASE_URL, Base  
+from app.db import DATABASE_URL
+from app.db.base import Base, Instrument, Person, Order, Quote, MarketSubscription
 
 
 # this is the Alembic Config object, which provides
@@ -48,6 +49,8 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        compare_type=True,
+        include_schemas=True
     )
 
     with context.begin_transaction():
@@ -69,7 +72,9 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection, target_metadata=target_metadata,
+            compare_type=True,
+            include_schemas=True
         )
 
         with context.begin_transaction():

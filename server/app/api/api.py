@@ -4,7 +4,7 @@ import mimetypes
 import fastapi
 from fastapi import APIRouter
 
-from app.api.routers import  instrument, order, user
+from app.api.routers import  instrument, order, auth
 from app.utils import ntpro_server
 
 html = pathlib.Path("./app/index.html").read_text()
@@ -13,7 +13,7 @@ websocket_server = ntpro_server.NTProServer()
 api_router = APIRouter(prefix="/api")
 
 api_router.include_router(order.router)
-api_router.include_router(user.router)
+api_router.include_router(auth.router)
 api_router.include_router(instrument.router)
 
 @api_router.get("/")

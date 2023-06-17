@@ -15,6 +15,13 @@ from app.schemas.server_messages import ServerMessageT
 if TYPE_CHECKING:
     from server.app.utils.ntpro_server import NTProServer
 
+class PersonData(pydantic.BaseModel):
+    login: str
+    uuid: str
+
+class PersonDataIn(pydantic.BaseModel):
+    login: str
+    password: str
 
 class ClientEnvelope(Envelope):
     message_type: enums.ClientMessageType

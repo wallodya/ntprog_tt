@@ -1,10 +1,8 @@
 import ormar
 
 from app.db import Base, database
-from app.models.base import create_model_meta
 
 class Instrument(ormar.Model):
-    # create_model_meta("Instrument")
     class Meta:
         tablename= "Instrument"
         metadata= Base.metadata

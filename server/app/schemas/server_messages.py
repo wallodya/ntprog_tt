@@ -4,10 +4,15 @@ import uuid
 from typing import List, TypeVar
 
 import bidict as bidict
+import pydantic
 
 from app.utils import enums
 from app.schemas.base import Envelope, Message, Quote
 
+
+class InstrumentData(pydantic.BaseModel):
+    name: str
+    instrument_id: str
 
 class ServerMessage(Message):
     def get_type(self: ServerMessageT) -> enums.ServerMessageType:

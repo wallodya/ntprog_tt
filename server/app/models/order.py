@@ -4,7 +4,6 @@ from app.db import database, Base
 from app.utils.enums import OrderSide, OrderStatus
 from app.models.user import Person
 from app.models.instrument import Instrument
-from app.models.base import create_model_meta
 
 
 class Order(ormar.Model):

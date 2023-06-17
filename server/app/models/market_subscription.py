@@ -3,7 +3,6 @@ import ormar
 from app.db import Base, database
 from app.models.instrument import Instrument
 from app.models.user import Person
-from app.models.base import create_model_meta
 
 
 class MarketSubscription(ormar.Model):

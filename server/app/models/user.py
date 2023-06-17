@@ -1,7 +1,6 @@
 import ormar
 
 from app.db import Base, database
-from app.models.base import create_model_meta
 
 class Person(ormar.Model):
     class Meta:
@@ -12,6 +11,6 @@ class Person(ormar.Model):
     uuid: str = ormar.UUID(primary_key=True)
 
     login: str = ormar.String(min_length=4, max_length=20)
-    password: str = ormar.String(min_length=4,max_length=40)
+    password: str = ormar.String(min_length=4,max_length=300)
 
-    created_at: int = ormar.Integer(minimum=0)
+    created_at: int = ormar.BigInteger(minimum=0)
