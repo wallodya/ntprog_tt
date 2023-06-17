@@ -1,8 +1,8 @@
 """models
 
-Revision ID: 0cb0a636f8db
-Revises: d3c75f3db4f5
-Create Date: 2023-06-17 10:13:34.931908
+Revision ID: 0386b9b4544b
+Revises: 877c898a2cd6
+Create Date: 2023-06-17 11:46:47.652717
 
 """
 from alembic import op
@@ -11,8 +11,8 @@ import ormar
 
 
 # revision identifiers, used by Alembic.
-revision = '0cb0a636f8db'
-down_revision = 'd3c75f3db4f5'
+revision = '0386b9b4544b'
+down_revision = '877c898a2cd6'
 branch_labels = None
 depends_on = None
 
@@ -39,16 +39,16 @@ def upgrade() -> None:
     sa.Column('status', sa.Integer(), nullable=False),
     sa.Column('amount', sa.Integer(), nullable=False),
     sa.Column('price', sa.DECIMAL(precision=10, scale=4), nullable=False),
-    sa.ForeignKeyConstraint(['instrument'], ['Instrument.instrument_id'], name='fk_Order_Instrument_instrument_id_instrument'),
-    sa.ForeignKeyConstraint(['user'], ['Person.uuid'], name='fk_Order_Person_uuid_user'),
+    sa.ForeignKeyConstraint(['instrument'], ['Instrument.instrument_id'], name='fk_Order_Instrument_instrument_id_instrument', ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['user'], ['Person.uuid'], name='fk_Order_Person_uuid_user', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('order_id')
     )
     op.create_table('Subscription',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('instrument', sa.Integer(), nullable=True),
     sa.Column('user', ormar.fields.sqlalchemy_uuid.CHAR(32), nullable=True),
-    sa.ForeignKeyConstraint(['instrument'], ['Instrument.instrument_id'], name='fk_Subscription_Instrument_instrument_id_instrument'),
-    sa.ForeignKeyConstraint(['user'], ['Person.uuid'], name='fk_Subscription_Person_uuid_user'),
+    sa.ForeignKeyConstraint(['instrument'], ['Instrument.instrument_id'], name='fk_Subscription_Instrument_instrument_id_instrument', ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['user'], ['Person.uuid'], name='fk_Subscription_Person_uuid_user', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('Quote',
@@ -57,9 +57,9 @@ def upgrade() -> None:
     sa.Column('offer', ormar.fields.sqlalchemy_uuid.CHAR(32), nullable=True),
     sa.Column('instrument', sa.Integer(), nullable=True),
     sa.Column('timestamp', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['bid'], ['Order.order_id'], name='fk_Quote_Order_order_id_bid'),
-    sa.ForeignKeyConstraint(['instrument'], ['Instrument.instrument_id'], name='fk_Quote_Instrument_instrument_id_instrument'),
-    sa.ForeignKeyConstraint(['offer'], ['Order.order_id'], name='fk_Quote_Order_order_id_offer'),
+    sa.ForeignKeyConstraint(['bid'], ['Order.order_id'], name='fk_Quote_Order_order_id_bid', ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['instrument'], ['Instrument.instrument_id'], name='fk_Quote_Instrument_instrument_id_instrument', ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['offer'], ['Order.order_id'], name='fk_Quote_Order_order_id_offer', ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('quote_id')
     )
     # ### end Alembic commands ###

@@ -1,12 +1,13 @@
 import ormar
 
 from app.db import Base, database
+from app.models.base import create_model_meta
 
 class Person(ormar.Model):
     class Meta:
-        tablename = "Person"
-        metadata = Base.metadata
-        database = database
+        tablename= "Person"
+        metadata= Base.metadata
+        database= database
     
     uuid: str = ormar.UUID(primary_key=True)
 
