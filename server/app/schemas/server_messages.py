@@ -14,6 +14,15 @@ class InstrumentData(pydantic.BaseModel):
     name: str
     instrument_id: str
 
+class OrderData(pydantic.BaseModel):
+    order_id: str
+    instrument: str
+    user_id: str
+    side: int
+    status: int
+    amount: int
+    price: float
+
 class ServerMessage(Message):
     def get_type(self: ServerMessageT) -> enums.ServerMessageType:
         return _SERVER_MESSAGE_TYPE_BY_CLASS[self.__class__]

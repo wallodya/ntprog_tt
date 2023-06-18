@@ -8,5 +8,5 @@ class Instrument(ormar.Model):
         metadata= Base.metadata
         database= database
 
-    instrument_id: int = ormar.Integer(primary_key=True)
+    instrument_id: int = ormar.Integer(primary_key=True,autoincrement=True)
     name: str = ormar.String(min_length=5, max_length=20)

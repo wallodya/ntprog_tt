@@ -8,7 +8,7 @@ class Person(ormar.Model):
         metadata= Base.metadata
         database= database
     
-    uuid: str = ormar.UUID(primary_key=True)
+    uuid: str = ormar.String(max_length=100, primary_key=True)
 
     login: str = ormar.String(min_length=4, max_length=20)
     password: str = ormar.String(min_length=4,max_length=300)

@@ -12,12 +12,12 @@ class Order(ormar.Model):
         metadata= Base.metadata
         database= database
 
-    order_id: str = ormar.UUID(primary_key=True)
+    order_id: str = ormar.String(max_length=100, primary_key=True)
 
-    instrument: Instrument = ormar.ForeignKey(
+    instrument = ormar.ForeignKey(
         Instrument, related_name="orders",ondelete="CASCADE"
     )
-    user: Person = ormar.ForeignKey(
+    user = ormar.ForeignKey(
         Person, related_name="orders",ondelete="CASCADE"
     )
 

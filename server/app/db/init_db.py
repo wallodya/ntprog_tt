@@ -15,3 +15,4 @@ engine = sqlalchemy.create_engine(
 )
 
 Base = declarative_base(bind=engine)
+
