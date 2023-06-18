@@ -24,8 +24,11 @@ class NTProServer:
                 envelope = client_messages.ClientEnvelope.parse_obj(raw_envelope)
                 message = envelope.get_parsed_message()
             except pydantic.ValidationError as ex:
+                print("not valid")
                 await self.send(server_messages.ErrorInfo(reason=str(ex)), websocket)
                 continue
+
+            print("message is valid")
 
             response = await message.process(self, websocket)
 

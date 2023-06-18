@@ -5,6 +5,7 @@ import time
 from fastapi import APIRouter, HTTPException, Request, Response
 import ormar
 import bcrypt
+from app.core.security import remove_auth_cookie, set_auth_cookie
 
 from app.schemas.client_messages import PersonDataIn, PersonData
 from app.models.user import Person
@@ -25,12 +26,7 @@ async def login(user_data: PersonDataIn, response: Response):
             ):
             raise HTTPException(401, "Invalid login or password")
         
-        response.set_cookie(
-            key="authentication",
-            value=existing_user.uuid,
-            httponly=True,
-            expires=DAY_MS
-        )
+        set_auth_cookie(existing_user, response)
 
         return existing_user
 
@@ -53,17 +49,12 @@ async def register(user_data: PersonDataIn, response: Response):
             uuid=user_id,
             created_at=time.time() * 1000
         )
-        response.set_cookie(
-            key="authentication",
-            value=new_user.uuid,
-            httponly=True,
-            expires=DAY_MS
-        )
+        set_auth_cookie(new_user, response)
         return new_user
 
 @user_router.post("/logout")
-def logout(response: Response, request: Request):
-    response.delete_cookie("authentication")
+def logout(response: Response):
+    remove_auth_cookie(response)
     return
 
 

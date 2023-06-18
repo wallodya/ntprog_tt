@@ -13,7 +13,7 @@ from app.schemas.base import Envelope, Message
 from app.schemas.server_messages import ServerMessageT
 
 if TYPE_CHECKING:
-    from server.app.utils.ntpro_server import NTProServer
+    from app.utils.ntpro_server import NTProServer
 
 class PersonData(pydantic.BaseModel):
     login: str
@@ -39,19 +39,21 @@ class ClientMessage(Message):
 
 
 class SubscribeMarketData(ClientMessage):
-    instrument: enums.Instrument
+    instrument_id: int
 
 
 class UnsubscribeMarketData(ClientMessage):
-    subscription_id: uuid.UUID
+    subscription_id: int
 
 
 class PlaceOrder(ClientMessage):
-    instrument: enums.Instrument
+    instrument: int
     side: enums.OrderSide
     amount: pydantic.condecimal(gt=decimal.Decimal())
     price: pydantic.condecimal(gt=decimal.Decimal())
 
+class CancelOrder(ClientMessage):
+    order_id: str
 
 _MESSAGE_PROCESSOR_BY_CLASS = {
     SubscribeMarketData: message_processors.subscribe_market_data_processor,

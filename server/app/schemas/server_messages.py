@@ -33,7 +33,8 @@ class ErrorInfo(ServerMessage):
 
 
 class SuccessInfo(ServerMessage):
-    ...
+    info: str | dict
+
 
 
 class ExecutionReport(ServerMessage):
