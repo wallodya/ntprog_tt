@@ -29,7 +29,6 @@ async def connect_to_websocket(websocket: fastapi.WebSocket, uuid: Annotated[str
     user = await get_user_by_id(cookie if cookie else uuid)
 
     websocket.state.user = user
-
     await websocket_server.connect(websocket)
 
     try:

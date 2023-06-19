@@ -1,17 +1,33 @@
 import fastapi
 import pydantic
 import starlette.datastructures
+from app.models.market_subscription import MarketSubscription
 
 from app.schemas import client_messages, server_messages, base
-
 
 class NTProServer:
     def __init__(self):
         self.connections: dict[starlette.datastructures.Address, base.Connection] = {}
 
     async def connect(self, websocket: fastapi.WebSocket):
+
+        user_subscriptions = await MarketSubscription.objects.prefetch_related(
+            [MarketSubscription.instrument],
+        ).filter(
+            user=websocket.state.user
+        ).all()
+
+        self.connections[websocket.client] = base.Connection(
+            socket=websocket,
+            subscriptions=list(
+                map(
+                    lambda sub: base.MarketSubscriptionModel.from_orm(sub),
+                    user_subscriptions
+                )
+            )
+        )
+        
         await websocket.accept()
-        self.connections[websocket.client] = base.Connection()
 
     def disconnect(self, websocket: fastapi.WebSocket):
         self.connections.pop(websocket.client)
@@ -24,11 +40,8 @@ class NTProServer:
                 envelope = client_messages.ClientEnvelope.parse_obj(raw_envelope)
                 message = envelope.get_parsed_message()
             except pydantic.ValidationError as ex:
-                print("not valid")
                 await self.send(server_messages.ErrorInfo(reason=str(ex)), websocket)
                 continue
-
-            print("message is valid")
 
             response = await message.process(self, websocket)
 

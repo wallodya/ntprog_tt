@@ -32,4 +32,4 @@ class Quote(ormar.Model):
         ondelete="CASCADE"
     )
 
-    timestamp: int = ormar.Integer(minimum=0)
+    timestamp: int = ormar.BigInteger(minimum=0)

@@ -1,27 +1,11 @@
 from __future__ import annotations
 
-import uuid
 from typing import List, TypeVar
 
 import bidict as bidict
-import pydantic
 
 from app.utils import enums
-from app.schemas.base import Envelope, Message, Quote
-
-
-class InstrumentData(pydantic.BaseModel):
-    name: str
-    instrument_id: str
-
-class OrderData(pydantic.BaseModel):
-    order_id: str
-    instrument: str
-    user_id: str
-    side: int
-    status: int
-    amount: int
-    price: float
+from app.schemas.base import Envelope, InstrumentData, Message, QuoteData
 
 class ServerMessage(Message):
     def get_type(self: ServerMessageT) -> enums.ServerMessageType:
@@ -38,14 +22,14 @@ class SuccessInfo(ServerMessage):
 
 
 class ExecutionReport(ServerMessage):
-    order_id: uuid.UUID
+    order_id: str
     order_status: enums.OrderStatus
 
 
 class MarketDataUpdate(ServerMessage):
-    subscription_id: uuid.UUID
-    instrument: enums.Instrument
-    quotes: List[Quote]
+    subscription_id: int
+    instrument: InstrumentData
+    quotes: List[QuoteData]
 
 
 class ServerEnvelope(Envelope):

@@ -1,9 +1,8 @@
-from typing import Annotated, List, Union
+from typing import Annotated, Union
 from fastapi import APIRouter, Query
-from ormar import UUID
 
 from app.models.order import Order
-from app.schemas.server_messages import OrderData
+from app.schemas.base import OrderData
 
 from app.db.create_data import create_orders
 
@@ -16,25 +15,27 @@ def flatten_order_data(order: Order) -> OrderData:
             "amount": order.amount,
             "price": order.price,
             "status": order.status,
-            "user": order.user.uuid,
-            "isntrument": order.instrument.name,
+            "user_id": order.user.uuid,
+            "instrument": order.instrument.name,
+            "created_at": order.created_at,
+            "updated_at": order.updated_at,
     }
 
 @order_router.get("/")
-async def get_orders(page: Annotated[Union[int, None], Query()] = 1):
+async def get_orders(page: Annotated[Union[int, None], Query()] = 1) -> list[OrderData]:
 
     orders = await Order.objects.paginate(
         1 if page <= 0 else page
     ).prefetch_related(
         [Order.user, Order.instrument]
-    ).fields(
-        ["order_id", "side", "amount", "status", "price", "instrument", "user"]
+    ).order_by(
+        "-created_at"
     ).all()
 
-    return list(map(flatten_order_data, orders))
+    flattened = list(map(flatten_order_data, orders))
+    return flattened
 
 @order_router.get("/create")
-async def create_fake_orders():
+async def create_fake_orders() -> None:
     await create_orders()
-
     return 

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import decimal
-import uuid
+import decimal 
 from typing import TypeVar, TYPE_CHECKING
 
 import bidict as bidict
@@ -15,13 +14,6 @@ from app.schemas.server_messages import ServerMessageT
 if TYPE_CHECKING:
     from app.utils.ntpro_server import NTProServer
 
-class PersonData(pydantic.BaseModel):
-    login: str
-    uuid: str
-
-class PersonDataIn(pydantic.BaseModel):
-    login: str
-    password: str
 
 class ClientEnvelope(Envelope):
     message_type: enums.ClientMessageType

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import abc
-import asyncio
-import decimal
-from typing import List, TypeVar
+from typing import TypeVar
+from fastapi import WebSocket
 
 import pydantic
 
@@ -15,8 +14,35 @@ def snake_to_camel(snake_str: str) -> str:
         return snake_str
 
     components = snake_str.split('_')
-    return components[0] + ''.join(x.title() for x in components[1:])
+    return components[0] + ''.join(x.title() for x in components[1:])\
+    
+class OrderData(pydantic.BaseModel):
+    order_id: str
+    instrument: str
+    user_id: str
+    side: int
+    status: int
+    amount: int
+    price: float
+    created_at: int
+    updated_at: int
 
+class InstrumentData(pydantic.BaseModel):
+    class Config:
+        orm_mode=True
+    name: str
+    instrument_id: int
+
+class UserDataIn(pydantic.BaseModel):
+    login: str
+    password: str
+
+class UserData(pydantic.BaseModel):
+    class Config:
+        orm_mode=True
+    uuid: str
+    login: str
+    created_at: int
 
 class Envelope(pydantic.BaseModel, abc.ABC):
     class Config:
@@ -39,19 +65,24 @@ class Message(pydantic.BaseModel, abc.ABC):
     @abc.abstractmethod
     def get_type(self): ...
 
+class MarketSubscriptionModel(pydantic.BaseModel):
+    class Config:
+        orm_mode=True
+    id: int
+    instrument: InstrumentData
 
 class Connection(pydantic.BaseModel):
     class Config:
         arbitrary_types_allowed = True
+    socket: WebSocket
+    subscriptions: list[MarketSubscriptionModel] = []
 
-    subscriptions: List[asyncio.Task] = []
 
-
-class Quote(pydantic.BaseModel):
-    bid: decimal.Decimal
-    offer: decimal.Decimal
-    min_amount: decimal.Decimal
-    max_amount: decimal.Decimal
+class QuoteData(pydantic.BaseModel):
+    bid: float
+    offer: float
+    bid_amount: int
+    offer_amount: int
 
 
 MessageT = TypeVar('MessageT', bound=Message)

@@ -1,5 +1,3 @@
-from datetime import date
-from typing import Union
 import uuid
 import time
 from fastapi import APIRouter, HTTPException, Request, Response
@@ -7,15 +5,13 @@ import ormar
 import bcrypt
 from app.core.security import remove_auth_cookie, set_auth_cookie
 
-from app.schemas.client_messages import PersonDataIn, PersonData
+from app.schemas.base import UserDataIn, UserData
 from app.models.user import Person
 
 user_router = APIRouter(prefix="/auth")
 
-DAY_MS = 24 * 60 * 60
-
 @user_router.post("/login")
-async def login(user_data: PersonDataIn, response: Response):
+async def login(user_data: UserDataIn, response: Response) -> UserData:
 
     try:
         existing_user = await Person.objects.get(login=user_data.login)
@@ -34,7 +30,7 @@ async def login(user_data: PersonDataIn, response: Response):
         raise HTTPException(401, "Invalid login or password")
 
 @user_router.post("/register")
-async def register(user_data: PersonDataIn, response: Response):
+async def register(user_data: UserDataIn, response: Response) -> UserData:
     
     try:
         await Person.objects.get(login=user_data.login)
@@ -53,7 +49,7 @@ async def register(user_data: PersonDataIn, response: Response):
         return new_user
 
 @user_router.post("/logout")
-def logout(response: Response):
+def logout(response: Response) -> None:
     remove_auth_cookie(response)
     return
 

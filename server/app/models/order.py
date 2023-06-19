@@ -25,3 +25,7 @@ class Order(ormar.Model):
     status: int = ormar.Integer(choices=list(OrderStatus))
     amount: int = ormar.Integer(minimum=1)
     price: float = ormar.Decimal(minimum=0.01,precision=10,scale=4)
+
+    created_at: int = ormar.BigInteger(minimum=0)
+    updated_at: int = ormar.BigInteger(minimum=0)
+
