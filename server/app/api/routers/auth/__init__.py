@@ -1,1 +1,1 @@
-from .auth import user_router as router
+from .auth import auth_router as router

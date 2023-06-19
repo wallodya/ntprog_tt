@@ -8,8 +8,7 @@ instrument_router = APIRouter(prefix="/instruments")
 
 @instrument_router.get("/")
 async def get_intruments() -> list[InstrumentData]:
-    instruments = await Instrument.objects.all()
-    return instruments
+    return await Instrument.objects.all()
 
 @instrument_router.get("/create")
 async def create_fake_intruments() -> list[InstrumentData]:

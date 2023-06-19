@@ -32,6 +32,8 @@ class InstrumentData(pydantic.BaseModel):
         orm_mode=True
     name: str
     instrument_id: int
+    buy_position: float
+    sell_position: float
 
 class UserDataIn(pydantic.BaseModel):
     login: str

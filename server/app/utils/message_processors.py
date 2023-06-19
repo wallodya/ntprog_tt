@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 import ormar
+from app.exchange.process_orders import ProcessOrder
 
 from app.models.instrument import Instrument
 from app.models.market_subscription import MarketSubscription
@@ -14,7 +15,9 @@ from app.schemas import server_messages
 from app.schemas.server_messages import ExecutionReport
 from app.utils.enums import OrderStatus
 
-from app.exchange.update_quotes import MarketUpdateService
+from app.exchange.quote_updates import UpdateQuotes
+
+from app.crud.base import get_insturment_by_id
 
 
 if TYPE_CHECKING:
@@ -24,17 +27,7 @@ if TYPE_CHECKING:
     from app.utils.ntpro_server import NTProServer
 
 
-async def get_insturment_by_id(id: int) -> Instrument:
-    from app.schemas import server_messages
 
-    try:
-        instrument = await Instrument.objects.get(instrument_id=id)
-    except ormar.NoMatch:
-        return server_messages.ErrorInfo(
-            reason=f"Instrument with id {id} does not exists"
-        )
-    
-    return instrument
 
 async def subscribe_market_data_processor(
         server: NTProServer,
@@ -98,7 +91,8 @@ async def place_order_processor(
         websocket
     )
 
-    asyncio.create_task(MarketUpdateService(server, order).update_quotes())
+    asyncio.create_task(UpdateQuotes(server, order).execute())
+    asyncio.create_task(ProcessOrder(server, websocket, order).mock_processing())
 
     return server_messages.SuccessInfo(info="Order is placed")
 

@@ -1,3 +1,4 @@
+import bcrypt
 from fastapi import HTTPException, Response
 import ormar
 from app.core.config import AUTH_COOKIE_EXPIRATION_S, AUTH_COOKIE_NAME
@@ -29,3 +30,13 @@ async def get_user_by_id(id: str) -> Person:
         raise HTTPException(403, "Forbidden")
 
     return user
+
+def check_password(pwd_in:str, pwd_user: str) -> bool:
+    return bcrypt.checkpw(
+        pwd_in.encode("utf-8"),
+        pwd_user.encode("utf-8")
+    )
+
+def generate_hashed_password(pwd: str):
+    salt = bcrypt.gensalt(12)
+    return bcrypt.hashpw(pwd.encode("utf-8"), salt)

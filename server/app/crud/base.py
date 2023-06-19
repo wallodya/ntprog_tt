@@ -1,0 +1,61 @@
+import time
+import uuid
+import ormar
+
+from app.models.instrument import Instrument
+from app.models.order import Order
+from app.models.user import Person
+from app.schemas.base import OrderData, UserDataIn
+from app.core.security import generate_hashed_password
+
+
+async def get_insturment_by_id(id: int) -> Instrument:
+    from app.schemas import server_messages
+
+    try:
+        instrument = await Instrument.objects.get(instrument_id=id)
+    except ormar.NoMatch:
+        return server_messages.ErrorInfo(
+            reason=f"Instrument with id {id} does not exists"
+        )
+    
+    return instrument
+
+async def create_user(user_data: UserDataIn) -> Person:
+    user_id = str(uuid.uuid4())
+
+    hashed_password = generate_hashed_password(user_data.password)
+
+    new_user = await Person.objects.create(
+        login=user_data.login,
+        password=hashed_password,
+        uuid=user_id,
+        created_at=time.time() * 1000
+    )
+
+    return new_user
+
+async def get_orders_for_page(page: int) -> list[OrderData]:
+
+    def flatten_order_data(order: Order) -> OrderData:
+        return {
+            "order_id": order.order_id,
+            "side": order.side,
+            "amount": order.amount,
+            "price": order.price,
+            "status": order.status,
+            "user_id": order.user.uuid,
+            "instrument": order.instrument.name,
+            "created_at": order.created_at,
+            "updated_at": order.updated_at,
+        }
+
+    orders = await Order.objects.paginate(
+        1 if page <= 0 else page
+    ).prefetch_related(
+        [Order.user, Order.instrument]
+    ).order_by(
+        "-created_at"
+    ).all()
+
+    return list(map(flatten_order_data, orders))

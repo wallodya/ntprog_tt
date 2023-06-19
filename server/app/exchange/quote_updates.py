@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from app.utils.ntpro_server import NTProServer
     from app.models.order import Order
 
-class MarketUpdateService():
+class UpdateQuotes():
 
     def __init__(self, server: NTProServer, order: Order) -> None:
 
@@ -30,7 +30,7 @@ class MarketUpdateService():
 
         return
 
-    async def update_quotes(self) -> None:
+    async def execute(self) -> None:
         await self.set_current_quote()
 
         if not self.current_quote:
