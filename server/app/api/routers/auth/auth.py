@@ -1,6 +1,6 @@
 import uuid
 import time
-from fastapi import APIRouter, HTTPException, Request, Response
+from fastapi import APIRouter, HTTPException, Response
 import ormar
 import bcrypt
 from app.core.security import remove_auth_cookie, set_auth_cookie

@@ -10,6 +10,7 @@ import ormar
 from app.models.instrument import Instrument
 from app.models.market_subscription import MarketSubscription
 from app.models.order import Order
+from app.schemas import server_messages
 from app.schemas.server_messages import ExecutionReport
 from app.utils.enums import OrderStatus
 
@@ -97,7 +98,43 @@ async def place_order_processor(
         websocket
     )
 
-    # asyncio.create_task(update_quotes(order, server))
     asyncio.create_task(MarketUpdateService(server, order).update_quotes())
 
     return server_messages.SuccessInfo(info="Order is placed")
+
+async def cancel_order_processor(
+        server: NTProServer,
+        websocket: fastapi.WebSocket,
+        message: client_messages.CancelOrder
+):
+    
+    order = await Order.objects.get_or_none(
+        order_id=message.order_id,
+        status=OrderStatus.active
+    )
+
+    print("order: ", order)
+
+    if not order:
+        return server_messages.ErrorInfo(
+            reason=f"There is no active order with id <{message.order_id}>"
+        )
+
+    if order.user != websocket.state.user:
+        return server_messages.ErrorInfo(
+            reason="You can't cancel this order"
+        )
+
+
+    await Order.objects.filter(
+        order_id=message.order_id
+    ).update(
+        status=OrderStatus.cancelled
+    )
+
+    await server.send(
+        ExecutionReport(order_id=message.order_id,order_status=OrderStatus.cancelled),
+        websocket
+    )
+
+    return server_messages.SuccessInfo(info="Order is cancelled")
