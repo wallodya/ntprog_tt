@@ -69,6 +69,18 @@ class UserDataIn(pydantic.BaseModel):
     login: str
     password: str
 
+    @pydantic.validator("login")
+    def validate_login(cls, v):
+        if len(v) < 4 or len(v) > 20:
+            raise pydantic.ValidationError("Login must be at least 4 letters long")
+        return v
+        
+    @pydantic.validator("password")
+    def validate_password(cls, v):
+        if len(v) < 4 or len(v) > 20:
+            raise pydantic.ValidationError("Login must be at least 4 letters long")     
+        return v
+
 class UserData(pydantic.BaseModel):
     class Config:
         orm_mode=True

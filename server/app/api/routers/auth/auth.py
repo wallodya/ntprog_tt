@@ -18,7 +18,6 @@ auth_router = APIRouter(prefix="/auth", tags=["Auth"])
     summary="Log into existing account"
 )
 async def login(user_data: UserDataIn, response: Response) -> UserData:
-
     existing_user = await Person.objects.get_or_none(login=user_data.login)
 
     if not existing_user:
@@ -52,7 +51,7 @@ async def register(user_data: UserDataIn, response: Response) -> UserData:
 
 @auth_router.post(
     "/logout",
-    summary="Log out"
+    summary="Log out",
 )
 def logout(response: Response) -> None:
     remove_auth_cookie(response)
