@@ -7,7 +7,7 @@ import os
 from app.models.instrument import Instrument
 from app.models.order import Order
 from app.models.user import Person
-from app.schemas.base import OrderData, UserDataIn
+from app.schemas.base import OrderData, UserData, UserDataIn
 from app.core.security import generate_hashed_password
 
 
@@ -24,7 +24,7 @@ async def get_insturment_by_id(id: int) -> Instrument:
     return instrument
 
 
-async def create_user(user_data: UserDataIn) -> Person:
+async def create_user(user_data: UserDataIn) -> UserData:
     user_id = str(uuid.uuid4())
 
     hashed_password = generate_hashed_password(user_data.password)
@@ -36,7 +36,12 @@ async def create_user(user_data: UserDataIn) -> Person:
         created_at=time.time() * 1000
     )
 
-    return new_user
+    return {
+        "login": new_user.login,
+        "uuid": new_user.uuid,
+        "created_at": new_user.created_at,
+        "subscriptions": []
+    }
 
 
 def flatten_order_data(order: Order) -> OrderData:

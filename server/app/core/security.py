@@ -4,13 +4,14 @@ import ormar
 from app.core.config import AUTH_COOKIE_EXPIRATION_S, AUTH_COOKIE_NAME
 
 from app.models.user import Person
+from app.schemas.base import UserData
 
 
-def set_auth_cookie(user: Person, response: Response) -> None:
+def set_auth_cookie(user: UserData | Person, response: Response) -> None:
     response.set_cookie(
         key=AUTH_COOKIE_NAME,
         value=user.uuid,
-        httponly=True,
+        # httponly=True,
         expires=AUTH_COOKIE_EXPIRATION_S
     )
     return

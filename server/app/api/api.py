@@ -30,6 +30,7 @@ def get_index():
 
 @api_router.websocket("/ws")
 async def connect_to_websocket(websocket: fastapi.WebSocket, uuid: Annotated[str | None, Header()] = None):
+    print('got ws request')
     cookie = websocket.cookies.get(AUTH_COOKIE_NAME)
     user = await get_user_by_id(cookie if cookie else uuid)
 

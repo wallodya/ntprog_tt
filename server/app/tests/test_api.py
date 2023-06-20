@@ -4,7 +4,7 @@ from fastapi import status
 
 from app.main import app
 
-
+from app.schemas import server_messages 
 
 @pytest.fixture(scope="session")
 def client():
@@ -116,3 +116,5 @@ def test_websocket(client: TestClient):
         socket.send_json({
             "hello": "world"
         })
+        data = socket.recieve_json()
+

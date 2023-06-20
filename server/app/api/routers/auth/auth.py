@@ -1,3 +1,4 @@
+from typing import Any
 from fastapi import APIRouter, HTTPException, Response, status
 
 from app.core.security import (
@@ -18,7 +19,9 @@ auth_router = APIRouter(prefix="/auth", tags=["Auth"])
     summary="Log into existing account"
 )
 async def login(user_data: UserDataIn, response: Response) -> UserData:
-    existing_user = await Person.objects.get_or_none(login=user_data.login)
+    existing_user = await Person.objects.prefetch_related(
+        ["subscriptions", "subscriptions__instrument"]
+    ).get_or_none(login=user_data.login)
 
     if not existing_user:
         raise HTTPException(401, "Invalid login or password")
@@ -29,7 +32,26 @@ async def login(user_data: UserDataIn, response: Response) -> UserData:
 
     set_auth_cookie(existing_user, response)
 
-    return existing_user
+    # def flatten_user_subscriptions(user: Person) -> UserData:
+    #     return {
+    #         "login": user.login,
+    #         "created_at": user.created_at,
+    #         "uuid": user.uuid,
+    #         "subscriptions" : list(
+    #             map(
+    #                 lambda sub: {
+    #                     "name": sub.instrument.name,
+    #                     "instrument_id": sub.instrument.instrument_id,
+    #                     "buy_position": sub.instrument.buy_position,
+    #                     "sell_position": sub.instrument.sell_position,
+    #                 }, user.subscriptions
+    #             )
+    #         )
+    #     }
+    
+    # user_out = flatten_user_subscriptions(existing_user)
+    print(existing_user.subscriptions[0])
+    return UserData.from_orm(existing_user)
 
 @auth_router.post(
     "/register",
@@ -37,7 +59,8 @@ async def login(user_data: UserDataIn, response: Response) -> UserData:
     summary="Create new account"
 )
 async def register(user_data: UserDataIn, response: Response) -> UserData:
-    
+    print("user_data:")
+    print(user_data)
     existing_user = await Person.objects.get_or_none(login=user_data.login)
 
     if existing_user:

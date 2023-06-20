@@ -81,6 +81,12 @@ class UserDataIn(pydantic.BaseModel):
             raise pydantic.ValidationError("Login must be at least 4 letters long")     
         return v
 
+class MarketSubscriptionModel(pydantic.BaseModel):
+    class Config:
+        orm_mode=True
+    id: int
+    instrument: InstrumentData
+    
 class UserData(pydantic.BaseModel):
     class Config:
         orm_mode=True
@@ -94,6 +100,8 @@ class UserData(pydantic.BaseModel):
     uuid: str
     login: str
     created_at: int
+    subscriptions: list[MarketSubscriptionModel]
+
 
 class Envelope(pydantic.BaseModel, abc.ABC):
     class Config:
@@ -116,11 +124,7 @@ class Message(pydantic.BaseModel, abc.ABC):
     @abc.abstractmethod
     def get_type(self): ...
 
-class MarketSubscriptionModel(pydantic.BaseModel):
-    class Config:
-        orm_mode=True
-    id: int
-    instrument: InstrumentData
+
 
 class Connection(pydantic.BaseModel):
     class Config:
