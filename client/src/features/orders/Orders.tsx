@@ -6,18 +6,6 @@ import Decimal from "decimal.js"
 import { OrderSide, OrderStatus } from "types/Enums"
 import { useOrdersTable } from "./orders.hooks"
 
-export type Order = {
-	orderId: string
-	created_at: number
-	updated_at: number
-	status: OrderStatus
-	side: OrderSide
-	price: Decimal
-	amount: number
-	instrument: string
-    userId: string
-}
-
 //TODO Sorting and filtering
 const Orders = () => {
 

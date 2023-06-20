@@ -15,4 +15,10 @@ export const tickerSchema = z.object({
     price: z.number().min(0.01)
 })
 
+export type RawTickerFormData = {
+    instrument: string,
+    amount: number,
+    side: number,
+    prce: number
+}
 export type TickerFormData = z.infer<typeof tickerSchema>

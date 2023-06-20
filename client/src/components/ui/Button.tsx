@@ -1,12 +1,12 @@
-import React, { HTMLAttributes, LegacyRef, ReactNode, forwardRef } from "react"
+import React, { ButtonHTMLAttributes, HTMLAttributes, LegacyRef, ReactNode, forwardRef } from "react"
 import { twMerge } from "tailwind-merge"
 
 type ButtonType = "primary" | "secondary" | "tetriary"
 
 type ButtonProps = {
 	children: ReactNode
-	type: ButtonType
-} & HTMLAttributes<HTMLButtonElement>
+	styleType: ButtonType
+} & ButtonHTMLAttributes<HTMLButtonElement>
 
 const useDefaultButtonClasses = (type: ButtonType) => {
 	const baseClasses = "px-4 py-2 rounded-lg text-sma font-semibold transition "
@@ -26,8 +26,8 @@ const useDefaultButtonClasses = (type: ButtonType) => {
 	}
 }
 
-const Button = forwardRef(({ children, className, type, ...props }: ButtonProps, ref) => {
-	const defaultClasses = useDefaultButtonClasses(type)
+const Button = forwardRef(({ children, className, styleType, ...props }: ButtonProps, ref) => {
+	const defaultClasses = useDefaultButtonClasses(styleType)
 	return (
 		<button
 			ref={ref as LegacyRef<HTMLButtonElement>}

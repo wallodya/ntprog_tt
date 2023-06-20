@@ -1,20 +1,66 @@
 import {
-    SortingState,
-    getCoreRowModel,
-    getSortedRowModel,
-    useReactTable,
+	SortingState,
+	getCoreRowModel,
+	getSortedRowModel,
+	useReactTable,
 } from "@tanstack/react-table"
 import { useEffect, useState } from "react"
-import { Order } from "./Orders"
-import { MOCK_BID_DATA } from "./__mock__"
+import { Order } from "models/Base"
 import columns from "./orders-table-columns"
 import { useSocket } from "utils/socket/SocketProvider"
 import { ExecutionReport } from "models/ServerMessages"
+import { useQuery } from "@tanstack/react-query"
+import { toast } from "react-toastify"
+import { isServerHttpException } from "features/auth/types/auth.types"
+import { ordersDataSchema } from "./order.schema"
+
+const fetchOrders = async () => {
+
+	const url = process.env["REACT_APP_SERVER_URL"]
+
+	if (!url) {
+		return []
+	}
+
+	const response = await fetch(`${url}/orders?page=1`, {
+		method: "GET",
+		credentials: "include",
+	})
+
+	const resData = await response.json()
+
+	if (![200, 201].includes(response.status)) {
+		if (isServerHttpException(resData)) {
+			if (typeof resData.detail === "string") {
+				toast.error(resData.detail)
+				return []
+			}
+
+			console.log(resData.detail)
+		}
+
+		return []
+	}
+
+	const ordersData = ordersDataSchema.safeParse(resData)
+
+	if (ordersData.success) {
+		return ordersData.data
+	}
+
+	return []
+}
 
 export const useOrdersTable = () => {
 	//TODO need to fetch this from server
-    const socket = useSocket()
-	const [data, setData] = useState<Order[]>(MOCK_BID_DATA)
+	const socket = useSocket()
+	const [data, setData] = useState<Order[]>([])
+
+	useQuery(["orders", 1], fetchOrders, {
+        onSuccess: (data) => {
+            setData(data)
+        }
+    })
 
 	const [sorting, setSorting] = useState<SortingState>([])
 
@@ -29,22 +75,23 @@ export const useOrdersTable = () => {
 		getSortedRowModel: getSortedRowModel(),
 	})
 
-    const onExecutionReport = (message: ExecutionReport) => {
-        setData(data =>
-            data.map(order =>
-                order.orderId === message.orderId
-                    ? { ...order, status: message.orderStatus }
-                    : order
-            )
-        )
-    }
+	const onExecutionReport = (message: ExecutionReport) => {
+		setData(data =>
+			data.map(order =>
+				order.orderId === message.orderId
+					? { ...order, status: message.orderStatus }
+					: order
+			)
+		)
+	}
 
-    useEffect(() => {
-        const eventName = "execution-report"
-        socket.on(eventName, onExecutionReport)
-        return () => {socket.removeListener(eventName, onExecutionReport)}
-    })
-
+	useEffect(() => {
+		const eventName = "execution-report"
+		socket.on(eventName, onExecutionReport)
+		return () => {
+			socket.removeListener(eventName, onExecutionReport)
+		}
+	})
 
 	return table
 }

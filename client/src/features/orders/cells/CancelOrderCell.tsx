@@ -1,6 +1,6 @@
 import Button from "components/ui/Button"
 import React from "react"
-import { Order } from "../Orders"
+import { Order } from "models/Base"
 import { useAuth } from "features/auth/AuthProvider"
 import { OrderStatus } from "types/Enums"
 import { useSocket } from "utils/socket/SocketProvider"
@@ -28,7 +28,7 @@ const CancelOrderCell = ({order}:{order: Order}) => {
 	return (
 		<div>
 			<Button
-				type="secondary"
+				styleType="secondary"
 				onClick={handleCancel}
 				className="text-xs px-2 py-1"
 			>

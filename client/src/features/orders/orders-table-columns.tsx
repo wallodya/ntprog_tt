@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table"
-import { Order } from "./Orders"
+import { Order } from "models/Base"
 import AmountCell from "./cells/AmountCell"
 import IDCell from "./cells/IDCell"
 import InstrumentCell from "./cells/InstrumentCell"
@@ -17,11 +17,11 @@ const columns = [
 		cell: info => <IDCell id={info.getValue()}/>,
         enableSorting: false,
 	}),
-	columnHelper.accessor("created_at", {
+	columnHelper.accessor("createdAt", {
         header: "Creation time",
 		cell: info => <TimeCell timestamp={info.getValue()}/>,
 	}),
-	columnHelper.accessor("updated_at", {
+	columnHelper.accessor("updatedAt", {
         header: "Change time",
         cell: info => <TimeCell timestamp={info.getValue()}/>,
 	}),

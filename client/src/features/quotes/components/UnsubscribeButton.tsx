@@ -12,7 +12,7 @@ const UnsubscribeButton = ({
 	return (
 		<AlertDialog.Root>
 			<AlertDialog.Trigger asChild>
-                <Button type="tetriary" className="px-2 py-1 text-sm">Unsubscribe</Button>
+                <Button styleType="tetriary" className="px-2 py-1 text-sm">Unsubscribe</Button>
             </AlertDialog.Trigger>
 			<AlertDialog.Portal>
 				<AlertDialog.Overlay className="fixed z-40 h-screen w-screen inset-0 bg-gray-950/70" />
@@ -27,10 +27,10 @@ const UnsubscribeButton = ({
                             <div className="flex justify-end gap-2">
 
 							<AlertDialog.Cancel asChild>
-								<Button type="secondary">Cancel</Button>
+								<Button styleType="secondary">Cancel</Button>
 							</AlertDialog.Cancel>
 							<AlertDialog.Action asChild>
-								<Button type="primary" onClick={handleUnsubscribe}>Unscubscribe</Button>
+								<Button styleType="primary" onClick={handleUnsubscribe}>Unscubscribe</Button>
 							</AlertDialog.Action>
                             </div>
 						</Card>

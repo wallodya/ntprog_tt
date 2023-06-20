@@ -61,7 +61,7 @@ export default class WSConnector extends EventEmitter {
 		})
 	}
 
-	unsubscribeMarketData(subscriptionId: string) {
+	unsubscribeMarketData(subscriptionId: number) {
 		this.send({
 			messageType: ClientMessageType.unsubscribeMarketData,
 			message: {

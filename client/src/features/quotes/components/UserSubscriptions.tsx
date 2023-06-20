@@ -30,7 +30,7 @@ const UserSubcriptions = ({
 		<>
 			<div className="mb-8 w-full flex justify-between items-baseline">
 				<h2 className="font-bold text-2xl">Subscriptions</h2>
-				<Button type="primary">New subscription</Button>
+				<Button styleType="primary">New subscription</Button>
 			</div>
             <QuotesChart quotes={chartData}/>
 			<div className="mt-8 flex gap-4 overflow-x-scroll">

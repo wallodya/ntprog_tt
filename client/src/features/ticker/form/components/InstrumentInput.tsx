@@ -1,29 +1,7 @@
 import FormFieldError from "components/ui/FormFieldError"
 import { useTicker } from "../TickerFormProvider"
 import { Instrument } from "models/Base"
-
-const MOCK_INSTRUMENT_DATA: Instrument[] = [
-    {
-        instrumentId: 1,
-        name: "USD/RUB",
-    },
-    {
-        instrumentId: 4,
-        name: "CHN/RUB",
-    },
-    {
-        instrumentId: 3,
-        name: "EUR/RUB",
-    },
-    {
-        instrumentId: 2,
-        name: "EUR/USD",
-    },
-    {
-        instrumentId: 5,
-        name: "BYN/RUB",
-    },
-]
+import { useInstruments } from "features/instruments/InstrumentsProvider"
 
 const InstrumentInput = () => {
     const {
@@ -32,6 +10,8 @@ const InstrumentInput = () => {
 			errors: { instrument: instrumentFieldError },
 		},
 	} = useTicker()
+
+    const instruments = useInstruments()
 
     return (
 		<>
@@ -47,8 +27,8 @@ const InstrumentInput = () => {
 				className="px-5 py-3 w-full mb-12 rounded-lg border border-neutral-500/50 text-neutral-900 bg-transparent"
 			>
                 {
-                    MOCK_INSTRUMENT_DATA.map(i => 
-                        <option key={i.instrumentId} value={i.instrumentId}>{i.name}</option>
+                    instruments.map(i => 
+                        <option key={i.instrumentId} value={String(i.instrumentId)}>{i.name}</option>
                     )
                 }
 			</select>

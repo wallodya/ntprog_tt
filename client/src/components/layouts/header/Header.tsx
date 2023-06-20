@@ -3,15 +3,17 @@ import Card from "components/ui/Card"
 import * as Dialog from "@radix-ui/react-dialog"
 import Ticker from "features/ticker/Ticker"
 import { useAuth } from "features/auth/AuthProvider"
+import AuthForm from "features/auth/form/AuthForm"
+import SignOutButton from "./SignOutButton"
 
 const NewBidButton = () => {
 	return (
 		<Dialog.Root>
 			<Dialog.Trigger asChild>
-				<Button type="primary">New bid</Button>
+				<Button styleType="primary">New bid</Button>
 			</Dialog.Trigger>
 			<Dialog.Portal>
-				<Dialog.Overlay className="fixed z-40 h-screen w-screen inset-0 bg-gray-950/70" />
+				<Dialog.Overlay className="fixed z-20 h-screen w-screen inset-0 bg-gray-950/70" />
 				<Dialog.Content>
 					<Ticker />
 				</Dialog.Content>
@@ -21,12 +23,21 @@ const NewBidButton = () => {
 }
 
 const SignInButton = () => {
-	return <Button type="secondary">Sign in</Button>
+	return (
+		<Dialog.Root>
+			<Dialog.Trigger asChild>
+                <Button styleType="primary">Sign in</Button>
+			</Dialog.Trigger>
+			<Dialog.Portal>
+				<Dialog.Overlay className="fixed z-20 h-screen w-screen inset-0 bg-gray-950/70" />
+				<Dialog.Content>
+					<AuthForm/>
+				</Dialog.Content>
+			</Dialog.Portal>
+		</Dialog.Root>
+	)
 }
 
-const SignOutButton = () => {
-	return <Button type="secondary">Sign out</Button>
-}
 
 const Header = () => {
 	const { user } = useAuth()

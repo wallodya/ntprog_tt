@@ -1,4 +1,4 @@
-import Header from 'components/layouts/Header'
+import Header from 'components/layouts/header/Header'
 import React, { ReactNode } from 'react'
 
 const PageLayout = ({children}:{children: ReactNode}) => {

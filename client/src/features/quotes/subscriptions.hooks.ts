@@ -28,7 +28,7 @@ const MOCK_QUOTES: Quote[] = [
 	},
 ]
 
-export const useMarketSubscription = (subscriptionId: string) => {
+export const useMarketSubscription = (subscriptionId: number) => {
     const socket = useSocket()
     const userData = useAuth()
 
@@ -50,7 +50,7 @@ export const useMarketSubscription = (subscriptionId: string) => {
             return
         }
         socket.unsubscribeMarketData(subscriptionId)
-        userData.removeSubscription(subscriptionId)
+        userData.controls.removeSubscription(subscriptionId)
     }
 
     return {

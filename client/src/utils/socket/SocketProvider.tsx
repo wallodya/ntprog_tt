@@ -12,10 +12,10 @@ export const useSocket = () => useContext(SocketContext)
 const SocketProvider = ({ children }: { children: ReactNode }) => {
 	const socket = new WSConnector()
 
-    useEffect(() => {
-        socket.connect()
-        return () => socket.disconnect()
-    }, [])
+    // useEffect(() => {
+    //     socket.connect()
+    //     return () => socket.disconnect()
+    // }, [])
 
 
 	return (

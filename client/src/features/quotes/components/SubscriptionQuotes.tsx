@@ -59,7 +59,7 @@ const SubscriptionQuotes = ({
 			</div>
 			{standalone && renderChart && (
 				<Button
-					type="tetriary"
+					styleType="tetriary"
 					className="mt-4 text-sm text-neutral-900/50 hover:text-neutral-900 border-none p-0"
 					onClick={() =>
 						renderChart(

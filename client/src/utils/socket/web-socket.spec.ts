@@ -99,7 +99,7 @@ describe("WSConnector", () => {
 			const data: UnsubscribeMarketDataEnvelope = {
 				messageType: ClientMessageType.unsubscribeMarketData,
 				message: {
-					subscriptionId: "subscription-id",
+					subscriptionId: 1,
 				},
 			}
 			socket.send(data)
@@ -196,10 +196,10 @@ describe("WSConnector", () => {
 			const data: UnsubscribeMarketDataEnvelope = {
 				messageType: ClientMessageType.unsubscribeMarketData,
 				message: {
-					subscriptionId: "subscription-id",
+					subscriptionId: 1,
 				},
 			}
-			socket.unsubscribeMarketData("subscription-id")
+			socket.unsubscribeMarketData(1)
 
 			expect(spyOnSend).toBeCalledTimes(1)
 			expect(spyOnSend).toBeCalledWith(data)
@@ -212,10 +212,10 @@ describe("WSConnector", () => {
 			const data: UnsubscribeMarketDataEnvelope = {
 				messageType: ClientMessageType.unsubscribeMarketData,
 				message: {
-					subscriptionId: "subscription-id",
+					subscriptionId: 1,
 				},
 			}
-			socket.unsubscribeMarketData("subscription-id")
+			socket.unsubscribeMarketData(1)
 
 			await expect(server).toReceiveMessage(JSON.stringify(data))
 		})

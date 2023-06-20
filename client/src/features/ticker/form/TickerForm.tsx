@@ -15,16 +15,22 @@ import { useSocket } from "utils/socket/SocketProvider"
 // import MarketQuotes from "features/quotes/MarketQuotes"
 
 const TickerForm = () => {
-	const [subscription, setSubscription] =
-		useState<MarketSubscription | null>()
+    const userData = useAuth()
+	const [subscription, setSubscription] = useState<MarketSubscription | null>(
+		userData.user
+			? userData.subscriptions.find(
+					sub => sub.instrument.instrumentId === 1
+			  ) ?? null
+			: null
+	)
 	const { handleSubmit, watch } = useTicker()
-	const userData = useAuth()
     const socket = useSocket()
 
 	useEffect(() => {
 		if (!userData.user) {
 			return
 		}
+
 		const { unsubscribe } = watch(values => {
 			setSubscription(
 				userData.subscriptions.find(
@@ -66,7 +72,7 @@ const TickerForm = () => {
 						<SubscriptionQuotes subscription={subscription} />
 					)}
 				</div>
-				<div className={`${subscription ? "opacity-0" : ""}`}>
+				<div className={`${subscription ? "opacity-0 pointer-events-none" : ""}`}>
 					<Card className="px-8 w-full border-2 border-neutral-900">
 						<h3 className="mb-2 font-semibold text-neutral-900 text-lg">
 							No data
@@ -77,9 +83,10 @@ const TickerForm = () => {
 							to recieve instruments latest market quotes
 						</p>
 						<Button
-							role="none"
+							
 							onClick={handleSubscribe}
-							type="secondary"
+							styleType="secondary"
+                            type="button"
 							className="text-sm px-2 py-2"
 						>
 							Subscribe

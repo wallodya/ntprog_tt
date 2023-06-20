@@ -1,5 +1,5 @@
 import Decimal from "decimal.js"
-import { ClientMessageType, ServerMessageType } from "types/Enums"
+import { ClientMessageType, OrderSide, OrderStatus, ServerMessageType } from "types/Enums"
 
 export interface Envelope {
 	messageType: ClientMessageType | ServerMessageType
@@ -16,12 +16,26 @@ export interface Quote {
 	offerAmount: Decimal
 }
 
+export type Order = {
+	orderId: string
+	createdAt: number
+	updatedAt: number
+	status: OrderStatus
+	side: OrderSide
+	price: Decimal
+	amount: number
+	instrument: string
+    userId: string
+}
+
 export interface Instrument {
     instrumentId: number,
     name: string,
+    buyPosition: Decimal,
+    sellPosition: Decimal
 }
 
 export interface MarketSubscription {
-    subscriptionId: string,
+    subscriptionId: number,
     instrument: Instrument,
 }

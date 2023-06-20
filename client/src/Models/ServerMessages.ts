@@ -38,7 +38,7 @@ export interface ExecutionReportEnvelope extends Envelope {
 }
 
 export interface MarketDataUpdate extends ServerMessage {
-	subscriptionId: string
+	subscriptionId: number
 	instrument: string
 	quotes: [Quote]
 }

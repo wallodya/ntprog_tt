@@ -18,7 +18,7 @@ export interface SubscribeMarketDataEnvelope extends Envelope {
 }
 
 export interface UnsubscribeMarketData {
-    subscriptionId: string
+    subscriptionId: number
 }
 
 export interface UnsubscribeMarketDataEnvelope extends Envelope {

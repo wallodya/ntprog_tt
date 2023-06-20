@@ -1,13 +1,17 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import Decimal from "decimal.js"
 import { useState } from "react"
-import { useForm, SubmitHandler, SubmitErrorHandler } from "react-hook-form"
+import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form"
 import { OrderSide } from "types/Enums"
 import { TickerFormData, tickerSchema } from "./ticker.schema"
 
 export const useTickerForm = () => {
     const formControls = useForm<TickerFormData>({
 		resolver: zodResolver(tickerSchema),
+        defaultValues: {
+            instrument: 1,
+            amount: 100
+        },
 		mode: "onSubmit",
 		reValidateMode: "onChange",
 	})
