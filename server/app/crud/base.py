@@ -1,3 +1,4 @@
+from math import floor
 import time
 import uuid
 import ormar
@@ -55,7 +56,7 @@ def flatten_order_data(order: Order) -> OrderData:
 async def get_orders_for_page(page: int) -> list[OrderData]:
 
     orders = await Order.objects.paginate(
-        1 if page <= 0 else page
+        1 if page <= 0 else floor(page)
     ).prefetch_related(
         [Order.user, Order.instrument]
     ).order_by(

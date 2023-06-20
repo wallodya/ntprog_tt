@@ -4,13 +4,23 @@ from app.schemas.base import InstrumentData
 
 from app.db.create_data import create_instruments
 
-instrument_router = APIRouter(prefix="/instruments")
+instrument_router = APIRouter(prefix="/instruments", tags=["Instruments"])
 
-@instrument_router.get("/")
-async def get_intruments() -> list[InstrumentData]:
+@instrument_router.get(
+    "/",
+    summary="Get all insturments",
+    description="Returns list of all existing instruments with positions"
+)
+async def get_all_intruments() -> list[InstrumentData]:
     return await Instrument.objects.all()
 
-@instrument_router.get("/create")
-async def create_fake_intruments() -> list[InstrumentData]:
+@instrument_router.get(
+    "/create",
+    summary="Generate fake instruments",
+    description="""
+        Creates few instruments and adds them to databse (for testing purposes)
+    """
+)
+async def create_fake_intruments() -> None:
     await create_instruments()
     return 

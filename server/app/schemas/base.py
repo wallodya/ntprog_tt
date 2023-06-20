@@ -6,7 +6,7 @@ from fastapi import WebSocket
 
 import pydantic
 
-from app.utils.enums import ClientMessageType, ServerMessageType
+from app.utils.enums import ClientMessageType, OrderStatus, ServerMessageType
 
 
 def snake_to_camel(snake_str: str) -> str:
@@ -17,6 +17,20 @@ def snake_to_camel(snake_str: str) -> str:
     return components[0] + ''.join(x.title() for x in components[1:])\
     
 class OrderData(pydantic.BaseModel):
+    class Config:
+        schema_extra={
+            "example": {
+                "order_id": "some-unique-order-id",
+                "instrument": "USD/RUB",
+                "user_id": "some-unique-user-id",
+                "side": 1,
+                "status": OrderStatus.active,
+                "amount": 100,
+                "price": 67.45,
+                "created_at": 1687171183841,
+                "updated_at": 1687171183841,
+            }
+        }
     order_id: str
     instrument: str
     user_id: str
@@ -30,18 +44,41 @@ class OrderData(pydantic.BaseModel):
 class InstrumentData(pydantic.BaseModel):
     class Config:
         orm_mode=True
+        schema_extra={
+            "example": {
+                "name": "USD/RUB",
+                "instrument_id": 6,
+                "buy_position": 134_032.98,
+                "sell_position": 145_321.56,
+            }
+        }
     name: str
     instrument_id: int
     buy_position: float
     sell_position: float
 
 class UserDataIn(pydantic.BaseModel):
+    class Config:
+        schema_extra={
+            "example": {
+                "login": "User1",
+                "password": "1234"
+            }
+        }
+
     login: str
     password: str
 
 class UserData(pydantic.BaseModel):
     class Config:
         orm_mode=True
+        schema_extra={
+            "example": {
+                "uuid": "some-unique-user-id",
+                "login": "User1",
+                "created_at": 1687171183841
+            }
+        }
     uuid: str
     login: str
     created_at: int

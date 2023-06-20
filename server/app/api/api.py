@@ -19,7 +19,12 @@ api_router.include_router(order.router)
 api_router.include_router(auth.router)
 api_router.include_router(instrument.router)
 
-@api_router.get("/")
+@api_router.get(
+    "/",
+    summary="Basic GET endpoint",
+    description="""Returns 'hello world'-like  html page""",
+    tags=["Main"]
+)
 def get_index():
     return fastapi.responses.HTMLResponse(html)
 
@@ -35,9 +40,3 @@ async def connect_to_websocket(websocket: fastapi.WebSocket, uuid: Annotated[str
         await websocket_server.serve(websocket)
     except fastapi.WebSocketDisconnect:
         websocket_server.disconnect(websocket)
-
-@api_router.get("/static/{path}")
-async def get_static(path: pathlib.Path):
-    static_file = (pathlib.Path('static') / path).read_text()
-    mime_type, encoding = mimetypes.guess_type(path)
-    return fastapi.responses.PlainTextResponse(static_file, media_type=mime_type)

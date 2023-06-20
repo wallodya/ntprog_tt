@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Response
+from fastapi import APIRouter, HTTPException, Response, status
 
 from app.core.security import (
     remove_auth_cookie,
@@ -11,9 +11,12 @@ from app.crud.base import create_user
 from app.schemas.base import UserDataIn, UserData
 from app.models.user import Person
 
-auth_router = APIRouter(prefix="/auth")
+auth_router = APIRouter(prefix="/auth", tags=["Auth"])
 
-@auth_router.post("/login")
+@auth_router.post(
+    "/login",
+    summary="Log into existing account"
+)
 async def login(user_data: UserDataIn, response: Response) -> UserData:
 
     existing_user = await Person.objects.get_or_none(login=user_data.login)
@@ -29,7 +32,11 @@ async def login(user_data: UserDataIn, response: Response) -> UserData:
 
     return existing_user
 
-@auth_router.post("/register")
+@auth_router.post(
+    "/register",
+    status_code=status.HTTP_201_CREATED,
+    summary="Create new account"
+)
 async def register(user_data: UserDataIn, response: Response) -> UserData:
     
     existing_user = await Person.objects.get_or_none(login=user_data.login)
@@ -43,7 +50,10 @@ async def register(user_data: UserDataIn, response: Response) -> UserData:
 
     return new_user
 
-@auth_router.post("/logout")
+@auth_router.post(
+    "/logout",
+    summary="Log out"
+)
 def logout(response: Response) -> None:
     remove_auth_cookie(response)
     return
