@@ -1,6 +1,7 @@
 from __future__ import annotations
 import asyncio
 import random
+import time
 from typing import TYPE_CHECKING
 
 from fastapi import WebSocket
@@ -76,7 +77,8 @@ class ProcessOrder():
         await Order.objects.filter(
             order_id=self.order.order_id
         ).update(
-            status=status
+            status=status,
+            updated_at=time.time() * 1000
         )
 
         return

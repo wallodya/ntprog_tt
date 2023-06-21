@@ -29,19 +29,15 @@ async def create_user(user_data: UserDataIn) -> UserData:
 
     hashed_password = generate_hashed_password(user_data.password)
 
-    new_user = await Person.objects.create(
+    new_user = await Person.objects.prefetch_related(
+        ["subscriptions"]
+    ).create(
         login=user_data.login,
         password=hashed_password,
         uuid=user_id,
         created_at=time.time() * 1000
     )
-
-    return {
-        "login": new_user.login,
-        "uuid": new_user.uuid,
-        "created_at": new_user.created_at,
-        "subscriptions": []
-    }
+    return new_user
 
 
 def flatten_order_data(order: Order) -> OrderData:

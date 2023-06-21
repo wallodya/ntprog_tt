@@ -36,6 +36,8 @@ async def subscribe_market_data_processor(
 ):
     from app.schemas import server_messages
 
+    server.logger.debug("Called <subscribe_market_data_processor>")
+
     try:
         instrument = await Instrument.objects.get(instrument_id=message.instrument_id)
     except ormar.NoMatch:
@@ -47,6 +49,8 @@ async def subscribe_market_data_processor(
         instrument=instrument,
         user=websocket.state.user
     )
+
+    server.logger.info("Subscribe market data message was processed successfully")
 
     return server_messages.SuccessInfo(info={
         "subscription_id": subscription.id
@@ -60,8 +64,11 @@ async def unsubscribe_market_data_processor(
 ):
     from app.schemas import server_messages
 
+    server.logger.debug("Called <unsubscribe_market_data_processor>")
+
     await MarketSubscription.objects.delete(id=message.subscription_id)
 
+    server.logger.info("Unsubscribe market data message was processed successfully")
     return server_messages.SuccessInfo(info="Unsubscribed")
 
 
@@ -71,6 +78,8 @@ async def place_order_processor(
         message: client_messages.PlaceOrder
 ):
     from app.schemas import server_messages
+
+    server.logger.debug("Called <place_order_processor>")
 
     instrument = await get_insturment_by_id(message.instrument)
 
@@ -90,9 +99,17 @@ async def place_order_processor(
         ExecutionReport(order_id=order.order_id,order_status=order.status),
         websocket
     )
+    server.logger.debug("Execution report sent for the new order")
 
     asyncio.create_task(UpdateQuotes(server, order).execute())
     asyncio.create_task(ProcessOrder(server, websocket, order).mock_processing())
+
+    server.logger.info(
+        f"""
+            Place order message was processed successfully.\n
+            New order id: {order.order_id}
+        """
+    )
 
     return server_messages.SuccessInfo(info="Order is placed")
 
@@ -102,19 +119,29 @@ async def cancel_order_processor(
         message: client_messages.CancelOrder
 ):
     
+    server.logger.info("Called <cancel_order_processor>")
+    
     order = await Order.objects.get_or_none(
         order_id=message.order_id,
         status=OrderStatus.active
     )
 
-    print("order: ", order)
 
     if not order:
+        server.warn(
+            f"""
+                Couldn't process cancel order message: 
+                order with id {message.order_id} doesn't exists
+            """
+        )
         return server_messages.ErrorInfo(
             reason=f"There is no active order with id <{message.order_id}>"
         )
 
     if order.user != websocket.state.user:
+        server.logger.warn(
+            f"Client {websocket.state.user.login} tried to cancel order of {order.user}"
+        )
         return server_messages.ErrorInfo(
             reason="You can't cancel this order"
         )
@@ -123,12 +150,17 @@ async def cancel_order_processor(
     await Order.objects.filter(
         order_id=message.order_id
     ).update(
-        status=OrderStatus.cancelled
+        status=OrderStatus.cancelled,
+        updated_at=time.time() * 1000
     )
 
     await server.send(
         ExecutionReport(order_id=message.order_id,order_status=OrderStatus.cancelled),
         websocket
+    )
+    
+    server.logger.info(
+        f"Cancel order message for order {message.order_id} was processed successfully"
     )
 
     return server_messages.SuccessInfo(info="Order is cancelled")

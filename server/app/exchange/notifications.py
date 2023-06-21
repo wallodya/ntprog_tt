@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 from fastapi import WebSocket
+from logging import getLogger
 
 from app.models.quote import Quote
 
@@ -20,11 +21,20 @@ class NotificationService():
         self.server = server
         self.instrument = instrument
         self.quotes = None
+
+        self.logger = getLogger("Root.NotificationService")
         return
     
     async def notify(self) -> None:
+        self.logger.info(
+            f"Notifying about '{self.instrument.name}' quote updates"
+        )
         for client, connection in self.server.connections.items():
             await self.check_subscriptions(connection)
+
+        self.logger.info(
+            f"Connected clients were notified about '{self.instrument.name}' quotes update"
+        )
 
     async def check_subscriptions(self, connection: base.Connection) -> bool:
         for subscription in connection.subscriptions:

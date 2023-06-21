@@ -8,10 +8,14 @@ from app.schemas.base import UserData
 
 
 def set_auth_cookie(user: UserData | Person, response: Response) -> None:
+
     response.set_cookie(
         key=AUTH_COOKIE_NAME,
         value=user.uuid,
-        # httponly=True,
+        path="/",
+        samesite="none",
+        secure=True,
+        httponly=True,
         expires=AUTH_COOKIE_EXPIRATION_S
     )
     return
@@ -23,12 +27,9 @@ def remove_auth_cookie(response: Response) -> None:
 async def get_user_by_id(id: str) -> Person:
 
     if not id:
-        raise HTTPException(403, "Forbidden")
+        return None
 
-    try:
-        user = await Person.objects.get(uuid=id)
-    except ormar.NoMatch:
-        raise HTTPException(403, "Forbidden")
+    user = await Person.objects.get_or_none(uuid=id)
 
     return user
 

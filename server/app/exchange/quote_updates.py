@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+import logging
 from typing import TYPE_CHECKING
 
 from app.models.quote import Quote
@@ -28,33 +29,67 @@ class UpdateQuotes():
         self.current_bid_price = None
         self.current_offer_price = None
 
+
+        self.logger = logging.getLogger("Root.UpdateQuotes")
+        self.logger.setLevel(logging.INFO)
         return
 
     async def execute(self) -> None:
+        self.logger.info(
+            f"Executing <UpdateQuotes> command for order: {self.new_order.order_id}"
+        )
         await self.set_current_quote()
 
-        if not self.current_quote:
-            return
-
-        self.set_current_prices()
+        if self.current_quote:
+            self.set_current_prices()
 
         bid_outdated, offer_outdated = self.quote_needs_update()
 
         if bid_outdated:
-            await self.create_new_quote(self.new_order, self.current_quote.offer)
+            self.logger.info(
+                f"""
+                    Bid price ({self.current_bid_price}) is outdated 
+                    for '{self.instrument.name}' instrument's quote.\n
+                    New price: {self.new_price}
+                """
+            )
+            await self.create_new_quote(
+                self.new_order,
+                self.current_quote.offer if self.current_quote else None
+            )
             await self.notify_subscribers()
             return
     
         if offer_outdated:
-            await self.create_new_quote(self.current_quote.bid, self.new_order)
+            self.logger.info(
+                f"""
+                    Offer price ({self.current_offer_price}) is outdated 
+                    for '{self.instrument.name} instrument's quote'.\n
+                    New price: {self.new_price}
+                """
+            )
+            await self.create_new_quote(
+                self.current_quote.bid if self.current_quote else None,
+                self.new_order
+            )
             await self.notify_subscribers()
             return
 
+        self.logger.info(
+            f"Quotes for instrument {self.instrument.name} don't need to be updated"
+        )
         return
 
     def set_current_prices(self) -> None:
-        self.current_bid_price = self.current_quote.bid.price
-        self.current_offer_price = self.current_quote.offer.price
+        if self.current_quote.bid:
+            self.current_bid_price = self.current_quote.bid.price
+        else:
+            self.current_bid_price = 0
+
+        if self.current_quote.offer:
+            self.current_offer_price = self.current_quote.offer.price
+        else:
+            self.current_offer_price = 0
 
         return
 
@@ -71,7 +106,12 @@ class UpdateQuotes():
 
         return
     
-    async def create_new_quote(self, bid: Order, offer: Order) -> Quote:
+    async def create_new_quote(self, bid: Order | None, offer: Order | None) -> Quote:
+        self.logger.debug(
+            f"""
+                Creating new quote for instrument '{self.instrument.name}'
+            """
+        )
         return await Quote.objects.create(
             bid=bid,
             offer=offer,
@@ -88,10 +128,10 @@ class UpdateQuotes():
             return (False, self.offer_needs_update())
     
     def bid_needs_update(self) -> bool:
-        return self.new_price > self.current_bid_price
+        return not self.current_quote or self.new_price > self.current_bid_price 
     
     def offer_needs_update(self) -> bool:
-        return self.new_price < self.current_offer_price
+        return not self.current_quote or self.new_price < self.current_offer_price 
 
     async def notify_subscribers(self) -> None:
         await self.notification_service.notify()
