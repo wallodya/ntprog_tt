@@ -1,4 +1,5 @@
 import Decimal from "decimal.js"
+import instrumentSchema from "features/instruments/instrument.schema"
 import { OrderStatus, ServerMessageType } from "types/Enums"
 import { z } from "zod"
 
@@ -40,8 +41,8 @@ export const executionReportMessageSchema = z
 
 export const marketDataUpdateMessageSchema = z
 	.object({
-		subscription_id: z.string(),
-		instrument: z.string(),
+		subscription_id: z.number(),
+		instrument: instrumentSchema,
 		quotes: z.array(
 			z
 				.object({
@@ -61,7 +62,7 @@ export const marketDataUpdateMessageSchema = z
 		),
 	})
 	.transform(data => ({
-		subcriptionId: data.subscription_id,
+		subscriptionId: data.subscription_id,
 		instrument: data.instrument,
         quotes: data.quotes
 	}))

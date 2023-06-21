@@ -38,7 +38,7 @@ export class ServerMessageValidator {
 
 	private validateServerMessage(
 		envelope: ServerEnvelopeUnsafe
-	): ServerEnvelope {
+	): ServerEnvelope | null {
 		let msg: { success: boolean; data?: object } = {
 			success: false,
 			data: {},
@@ -58,14 +58,16 @@ export class ServerMessageValidator {
 			}
 			case ServerMessageType.marketDataUpdate: {
 				msg = marketDataUpdateMessageSchema.safeParse(envelope.message)
+                console.debug("msg in validator: ", envelope.message)
 				break
 			}
 		}
 
 		if (msg.success) {
 			envelope.message = msg.data
+            return envelope
 		}
 
-		return envelope
+        return null
 	}
 }

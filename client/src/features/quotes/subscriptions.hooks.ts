@@ -35,10 +35,12 @@ export const useMarketSubscription = (subscriptionId: number) => {
     const [quotes, setQuotes] = useState<Quote[]>(MOCK_QUOTES)
 
     const onMarketUpdate = (quotes: Quote[]) => {
+        console.debug("Market quotes updated")
         setQuotes(quotes)
     }
     useEffect(() => {
         const eventName = `market-update-${subscriptionId}`
+        console.debug("event name in hook : ", eventName)
         socket.on(eventName, onMarketUpdate)
         return () => {socket.removeListener(eventName, onMarketUpdate)}
     }, [])

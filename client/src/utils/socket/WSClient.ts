@@ -120,6 +120,8 @@ export default class WSConnector extends EventEmitter {
                 return
             }
 			case ServerMessageType.marketDataUpdate: {
+                console.debug("Emitting market update event")
+                console.debug("Event name in WSClient: ", `market-update-${envelope.message.subscriptionId}`)
                 this.emit(
 					`market-update-${envelope.message.subscriptionId}`,
 					envelope.message.quotes
