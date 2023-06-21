@@ -51,6 +51,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(null)
         clearSubscriptions()
 		localStorage.removeItem("user")
+		localStorage.removeItem("subscriptions")
 	}
 
     const [controls, setControls] = useState<AuthContextValue["controls"]>({

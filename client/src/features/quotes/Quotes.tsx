@@ -1,5 +1,4 @@
 import Card from "components/ui/Card"
-import { MarketSubscription } from "models/Base"
 
 import { useAuth } from "features/auth/AuthProvider"
 import UserSubcriptions from "./components/UserSubscriptions"

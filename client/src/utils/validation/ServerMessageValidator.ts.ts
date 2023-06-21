@@ -10,20 +10,22 @@ import {
 } from "utils/validation/server-message.schema"
 
 export class ServerMessageValidator {
-    validate(message: string) {
-        const serverData = this.validateServerEnvelope(JSON.parse(message))
-        
+	validate(message: string) {
+		const serverData = this.validateServerEnvelope(JSON.parse(message))
+
 		if (!serverData) {
-            return null
+			return null
 		}
-        
-        if (!this.validateServerMessage(serverData)) {
-            return null
-        }
-        
-		return serverData
+
+		const messageData = this.validateServerMessage(serverData)
+
+		if (!messageData) {
+			return null
+		}
+
+		return messageData
 	}
-    
+
 	private validateServerEnvelope(obj: object) {
 		const envelope = serverMessageSchema.safeParse(obj)
 
@@ -34,35 +36,36 @@ export class ServerMessageValidator {
 		return envelope.data
 	}
 
-    private validateServerMessage(envelope: ServerEnvelopeUnsafe): envelope is ServerEnvelope {
-        let isMessageValid: boolean
+	private validateServerMessage(
+		envelope: ServerEnvelopeUnsafe
+	): ServerEnvelope {
+		let msg: { success: boolean; data?: object } = {
+			success: false,
+			data: {},
+		}
 		switch (envelope.messageType) {
 			case ServerMessageType.success: {
-				isMessageValid = successInfoMessageSchema.safeParse(
-					envelope.message
-				).success
+				msg = successInfoMessageSchema.safeParse(envelope.message)
 				break
 			}
 			case ServerMessageType.error: {
-				isMessageValid = errorInfoMessageSchema.safeParse(envelope.message).success
+				msg = errorInfoMessageSchema.safeParse(envelope.message)
 				break
 			}
 			case ServerMessageType.executionReport: {
-				isMessageValid = executionReportMessageSchema.safeParse(
-					envelope.message
-				).success
+				msg = executionReportMessageSchema.safeParse(envelope.message)
 				break
 			}
 			case ServerMessageType.marketDataUpdate: {
-				isMessageValid = marketDataUpdateMessageSchema.safeParse(
-					envelope.message
-				).success
+				msg = marketDataUpdateMessageSchema.safeParse(envelope.message)
 				break
 			}
-            default: {
-                isMessageValid = false
-            }
 		}
-        return isMessageValid
-    }
+
+		if (msg.success) {
+			envelope.message = msg.data
+		}
+
+		return envelope
+	}
 }

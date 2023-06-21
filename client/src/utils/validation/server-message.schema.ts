@@ -1,15 +1,17 @@
 import Decimal from "decimal.js"
-import { ServerMessageType } from "types/Enums"
+import { OrderStatus, ServerMessageType } from "types/Enums"
 import { z } from "zod"
 
 const serverMessageTypes = Object.values(ServerMessageType).filter(
 	Number.isInteger
 )
 
+const orderStutusValues = Object.values(OrderStatus).filter(Number.isInteger)
+
 export const serverMessageSchema = z
 	.object({
 		message_type: z.number().refine(num => serverMessageTypes.includes(num)),
-		message: z.object({}),
+		message: z.any(),
 	})
 	.transform(data => ({
 		messageType: data.message_type,
@@ -29,7 +31,7 @@ export const successInfoMessageSchema = z.object({
 export const executionReportMessageSchema = z
 	.object({
 		order_id: z.string(),
-		order_status: z.string(),
+		order_status: z.number().refine(num => orderStutusValues.includes(num)),
 	})
 	.transform(data => ({
 		orderId: data.order_id,

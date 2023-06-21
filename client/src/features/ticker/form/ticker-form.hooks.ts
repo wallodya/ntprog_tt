@@ -3,25 +3,26 @@ import Decimal from "decimal.js"
 import { useState } from "react"
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form"
 import { OrderSide } from "types/Enums"
-import { TickerFormData, tickerSchema } from "./ticker.schema"
+import { RawTickerFormData, TickerFormData, tickerSchema } from "./ticker.schema"
+import { useSocket } from "utils/socket/SocketProvider"
 
 export const useTickerForm = () => {
-    const formControls = useForm<TickerFormData>({
+    const socket = useSocket()
+    const formControls = useForm<RawTickerFormData,any,TickerFormData>({
 		resolver: zodResolver(tickerSchema),
         defaultValues: {
-            instrument: 1,
-            amount: 100
+            instrument: "1",
+            amount: "100"
         },
 		mode: "onSubmit",
 		reValidateMode: "onChange",
 	})
 
     const onSubmit: SubmitHandler<TickerFormData> = data => {
-		console.log("data: ")
-		console.log(data)
+        socket.placeOrder(data)
 	}
 
-	const onError: SubmitErrorHandler<TickerFormData> = error => {
+	const onError: SubmitErrorHandler<RawTickerFormData> = error => {
 		console.log("err: ", error)
 	}
 
@@ -33,7 +34,7 @@ export const useTickerForm = () => {
 		} else {
 			formControls.setValue("side", OrderSide.sell)
 		}
-        formControls.setValue("price", price.toNumber())
+        formControls.setValue("price", price)
 	}
 
     return {

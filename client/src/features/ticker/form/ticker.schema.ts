@@ -1,3 +1,4 @@
+import Decimal from "decimal.js";
 import { OrderSide } from "types/Enums";
 import { z } from "zod";
 
@@ -7,18 +8,29 @@ export const tickerSchema = z.object({
 	instrument: z.string().transform(Number),
 	amount: z
 		.string()
-		.transform(Number)
-		.refine(num => num > 0 && Number.isInteger(num), {
-			message: "Amount field is invalid",
-		}),
+        .transform(Number)
+        .refine(num => !isNaN(num), {
+            message: "Amount must be a number"
+        })
+        .transform(num => new Decimal(num))
+		.refine(num => num.greaterThan(0), {
+			message: "Amount must be greater then 0",
+		})
+        .refine(num => num.isInteger(), {
+            message: "Amount can't be fractional"
+        }),
 	side: z.number().refine(num => orderSideValues.includes(num)),
-    price: z.number().min(0.01)
+	price: z
+		.custom<Decimal>(data => data instanceof Decimal)
+		.refine(num => num.greaterThan(0), {
+            message: "Price must be greater than 0"
+        }),
 })
 
 export type RawTickerFormData = {
     instrument: string,
-    amount: number,
+    amount: string,
     side: number,
-    prce: number
+    price: Decimal
 }
 export type TickerFormData = z.infer<typeof tickerSchema>

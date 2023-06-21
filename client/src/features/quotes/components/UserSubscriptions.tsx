@@ -32,17 +32,23 @@ const UserSubcriptions = ({
 				<h2 className="font-bold text-2xl">Subscriptions</h2>
 				<Button styleType="primary">New subscription</Button>
 			</div>
-            <QuotesChart quotes={chartData}/>
-			<div className="mt-8 flex gap-4 overflow-x-scroll">
-				{subscriptions.map(subscription => (
-					<SubscriptionQuotes
-                        standalone
-						subscription={subscription}
-						key={subscription.subscriptionId}
-                        renderChart={renderChart}
-					/>
-				))}
-			</div>
+			{subscriptions.length === 0 ? (
+				<p>You don't have any subscriptions yet</p>
+			) : (
+				<>
+					<QuotesChart quotes={chartData} />
+					<div className="mt-8 flex gap-4 overflow-x-scroll">
+						{subscriptions.map(subscription => (
+							<SubscriptionQuotes
+								standalone
+								subscription={subscription}
+								key={subscription.subscriptionId}
+								renderChart={renderChart}
+							/>
+						))}
+					</div>
+				</>
+			)}
 		</>
 	)
 }

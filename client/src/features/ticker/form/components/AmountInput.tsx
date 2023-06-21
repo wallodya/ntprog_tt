@@ -1,6 +1,7 @@
 import FormFieldError from "components/ui/FormFieldError"
 import FormInput from "components/ui/FormInput"
 import { useTicker } from "../TickerFormProvider"
+import { FieldError } from "react-hook-form"
 
 const AmountInput = () => {
     const {
@@ -17,8 +18,9 @@ const AmountInput = () => {
 			>
 				Enter amount
 			</label>
-			<FormFieldError err={amountFieldError} />
+			<FormFieldError err={amountFieldError as FieldError} />
 			<FormInput
+                type="number"
 				placeholder="Amount"
 				{...register("amount")}
 				className="mb-12 w-full"

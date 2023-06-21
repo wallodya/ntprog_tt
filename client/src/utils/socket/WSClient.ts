@@ -21,23 +21,26 @@ export default class WSConnector extends EventEmitter {
 		this.connection = new WebSocket(this._url)
 		this.connection.onclose = () => {
 			this.connection = undefined
-			console.log("Closed connection to socket on ", this._url)
+			console.debug("Closed connection to socket on ", this._url)
 		}
 
 		this.connection.onerror = () => {
 			this.connection = undefined
-			console.log("WSConnector failed to connect to ", this._url)
+			console.debug("WSConnector failed to connect to ", this._url)
 		}
 
 		this.connection.onopen = () => {
-			console.log("Connected to socket on ", this._url)
+			console.debug("Connected to socket on ", this._url)
 		}
 
 		this.connection.onmessage = event => {
+            console.debug("Message recieved")
             const envelope = this._validate(event.data)
 			if (envelope) {
                 this._callMessageHandler(envelope)
+                return
             }
+            console.warn("Recieved message is not valid: ", event.data)
 		}
 	}
 
@@ -96,6 +99,7 @@ export default class WSConnector extends EventEmitter {
     }
 
 	private _callMessageHandler(envelope: ServerEnvelope) {
+        console.debug("Message type: ", envelope.messageType)
 		switch (envelope.messageType) {
 			case ServerMessageType.success: {
                 toast.success(envelope.message.info)
