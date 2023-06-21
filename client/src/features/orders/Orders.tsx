@@ -2,17 +2,22 @@ import {
     flexRender
 } from "@tanstack/react-table"
 import Card from "components/ui/Card"
-import Decimal from "decimal.js"
-import { OrderSide, OrderStatus } from "types/Enums"
+import OrdersSorting from "./OrdersSorting"
 import { useOrdersTable } from "./orders.hooks"
+import DownloadOrders from "./DownloadOrders"
 
-//TODO Sorting and filtering
 const Orders = () => {
 
     const table = useOrdersTable()
-
 	return (
 		<Card>
+            <div className="w-full mb-4 flex justify-between items-center">
+                <DownloadOrders/>
+                <div className="flex gap-2 items-baseline">
+                    <p className="font-semibold text-neutral-900/50">Sorting: </p>
+                    <OrdersSorting table={table}/>
+                </div>
+            </div>
 			<table className="w-full">
 				<thead className="">
 					{table.getHeaderGroups().map(headerGroup => (
@@ -25,20 +30,6 @@ const Orders = () => {
 												header.column.columnDef.header,
 												header.getContext()
 											)}
-										{header.column.getCanSort() && (
-											<div
-												className="text-sm font-semibold text-neutral-900/50 cursor-pointer"
-												onClick={header.column.getToggleSortingHandler()}
-											>
-												{{
-                                                    false: "Sort desc.",
-													asc: "Remove",
-													desc: "Sort asc",
-												}[
-													String(header.column.getIsSorted())
-												]}
-											</div>
-										)}
 									</div>
 								</th>
 							))}
