@@ -1,4 +1,3 @@
-import { MarketSubscription } from "models/Base"
 import {
     ReactNode,
     createContext,
@@ -6,31 +5,19 @@ import {
     useEffect,
     useState,
 } from "react"
-import { useSavedSubscriptions } from "features/quotes/subscriptions.hooks"
 import { User, isUserType } from "./types/auth.types"
-import { UserData } from "./types/user-data.schema"
-import { saveSubscriptions } from "features/quotes/subscriptions.utils"
+import { UserData } from "../../utils/validation/schemas/user-data.schema"
 
 export type AuthContextValue = {
-	subscriptions: MarketSubscription[]
 	user: User | null
-	controls: {
-		addSubscription: (sub: MarketSubscription) => void
-		removeSubscription: (id: number) => void
-		removeUser: () => void
-	}
+    removeUser: () => void
 	updateUser: (userData: UserData) => void
 }
 
 const initialContext: AuthContextValue = {
 	user: null,
-    controls: {
-        addSubscription: (sub: MarketSubscription) => {},
-        removeSubscription: (id: number) => {},
-        removeUser: () => {}
-    },
+    removeUser: () => {},
     updateUser: () => {},
-    subscriptions: []
 }
 
 const AuthContext = createContext<AuthContextValue>(initialContext)
@@ -38,25 +25,13 @@ const AuthContext = createContext<AuthContextValue>(initialContext)
 export const useAuth = () => useContext(AuthContext)
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const {
-		removeSubscription,
-		addSubscription,
-		clearSubscriptions,
-		setSubscriptions,
-		subscriptions,
-	} = useSavedSubscriptions()
 
 	const [user, setUser] = useState<User | null>(null)
     
 	const removeUser = () => {
         setUser(null)
-        clearSubscriptions()
 		localStorage.removeItem("user")
 	}
-
-    const [controls, setControls] = useState<AuthContextValue["controls"]>({
-        removeSubscription, addSubscription, removeUser
-    })
 
 	const initUser = () => {
 		const userDataLS = localStorage.getItem("user")
@@ -68,15 +43,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 		if (isUserType(parsedUserData)) {
 			setUser(parsedUserData)
 		}
-
-		if (user) {
-			setControls({
-				removeSubscription,
-				addSubscription,
-				removeUser,
-			})
-			return
-		}
 	}
 
 	useEffect(() => {
@@ -84,16 +50,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 	}, [])
 
     const updateUser = (userData: UserData) => {
-        const { subscriptions: userSubcriptions, ...userInfo } = userData
+        const { subscriptions, ...userInfo } = userData
 		setUser(userInfo)
-        setSubscriptions(userSubcriptions)
-		setControls({
-			removeSubscription,
-			addSubscription,
-			removeUser,
-		})
 		localStorage.setItem("user", JSON.stringify(userInfo))
-        saveSubscriptions(userSubcriptions)
 	}
 
 	return (
@@ -101,8 +60,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 			value={{
 				user,
 				updateUser,
-				controls,
-				subscriptions,
+                removeUser
 			}}
 		>
 			{children}

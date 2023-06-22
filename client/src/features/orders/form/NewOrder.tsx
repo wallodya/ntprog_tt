@@ -1,7 +1,7 @@
-import TickerForm from "./form/TickerForm"
-import TickerFormProvider from "./form/TickerFormProvider"
+import TickerForm from "./OrderForm"
+import TickerFormProvider from "./OrderFormProvider"
 
-const Ticker = () => {
+const NewOrder = () => {
 	return (
 		<>
 			<h2 className="mb-6 text-neutral-900 font-bold text-2xl">
@@ -14,4 +14,4 @@ const Ticker = () => {
 	)
 }
 
-export default Ticker
+export default NewOrder

@@ -1,4 +1,4 @@
-import { marketDataUpdateMessageSchema } from "./server-message.schema"
+import { marketDataUpdateMessageSchema } from "./schemas/server-message.schema"
 
 describe("Market update schema", () => {
 	describe("with empty quotes array", () => {

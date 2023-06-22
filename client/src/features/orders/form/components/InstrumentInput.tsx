@@ -1,7 +1,6 @@
 import FormFieldError from "components/ui/FormFieldError"
-import { useTicker } from "../TickerFormProvider"
-import { Instrument } from "models/Base"
 import { useInstruments } from "features/instruments/InstrumentsProvider"
+import { useOrder } from "../OrderFormProvider"
 
 const InstrumentInput = () => {
     const {
@@ -9,7 +8,7 @@ const InstrumentInput = () => {
 		formState: {
 			errors: { instrument: instrumentFieldError },
 		},
-	} = useTicker()
+	} = useOrder()
 
     const instruments = useInstruments()
 

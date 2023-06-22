@@ -1,8 +1,8 @@
 import Button from "components/ui/Button"
-import { useTicker } from "../TickerFormProvider"
+import { useOrder } from "../OrderFormProvider"
 
 const TickerOrderActions = () => {
-    const { handleOrderSide } = useTicker()
+    const { handleOrderSide } = useOrder()
 
     return (
 		<div className="flex gap-2">

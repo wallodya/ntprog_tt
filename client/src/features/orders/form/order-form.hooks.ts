@@ -3,26 +3,28 @@ import Decimal from "decimal.js"
 import { useState } from "react"
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form"
 import { OrderSide } from "types/Enums"
-import { RawTickerFormData, TickerFormData, tickerSchema } from "./ticker.schema"
-import { useSocket } from "utils/socket/SocketProvider"
+import {
+	RawOrderFormData,
+	OrderFormData,
+	orderFormSchema,
+} from "utils/validation/schemas/order-form.schema"
 
-export const useTickerForm = () => {
-    const socket = useSocket()
-    const formControls = useForm<RawTickerFormData,any,TickerFormData>({
-		resolver: zodResolver(tickerSchema),
-        defaultValues: {
-            instrument: "1",
-            amount: "100"
-        },
+export const useOrderForm = () => {
+    const formControls = useForm<RawOrderFormData, any, OrderFormData>({
+		resolver: zodResolver(orderFormSchema),
+		defaultValues: {
+			instrument: "1",
+			amount: "100",
+		},
 		mode: "onSubmit",
 		reValidateMode: "onChange",
 	})
 
-    const onSubmit: SubmitHandler<TickerFormData> = data => {
-        socket.placeOrder(data)
+    const onSubmit: SubmitHandler<OrderFormData> = data => {
+        // socket.placeOrder(data)
 	}
 
-	const onError: SubmitErrorHandler<RawTickerFormData> = error => {
+	const onError: SubmitErrorHandler<RawOrderFormData> = error => {
 		console.log("err: ", error)
 	}
 
@@ -41,8 +43,8 @@ export const useTickerForm = () => {
         ...formControls,
         handleSubmit: formControls.handleSubmit(onSubmit, onError),
         handleOrderSide,
-        tickerPrice: price,
-        setTickerPrice: setPrice
+        orderPrice: price,
+        setOrderPrice: setPrice
     }
 }
 

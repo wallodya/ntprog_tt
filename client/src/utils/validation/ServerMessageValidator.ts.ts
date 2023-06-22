@@ -7,7 +7,7 @@ import {
 	marketDataUpdateMessageSchema,
 	serverMessageSchema,
 	successInfoMessageSchema,
-} from "utils/validation/server-message.schema"
+} from "utils/validation/schemas/server-message.schema"
 
 export class ServerMessageValidator {
 	validate(message: string) {

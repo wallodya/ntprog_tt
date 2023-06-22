@@ -1,6 +1,6 @@
 import FormFieldError from "components/ui/FormFieldError"
 import FormInput from "components/ui/FormInput"
-import { useTicker } from "../TickerFormProvider"
+import { useOrder } from "../OrderFormProvider"
 import { FieldError } from "react-hook-form"
 
 const AmountInput = () => {
@@ -9,7 +9,7 @@ const AmountInput = () => {
 		formState: {
 			errors: { amount: amountFieldError },
 		},
-	} = useTicker()
+	} = useOrder()
     return (
 		<>
 			<label

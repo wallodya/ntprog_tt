@@ -4,7 +4,7 @@ import { z } from "zod";
 
 const orderSideValues = Object.values(OrderSide).filter(Number.isInteger)
 
-export const tickerSchema = z.object({
+export const orderFormSchema = z.object({
 	instrument: z.string().transform(Number),
 	amount: z
 		.string()
@@ -27,10 +27,10 @@ export const tickerSchema = z.object({
         }),
 })
 
-export type RawTickerFormData = {
+export type RawOrderFormData = {
     instrument: string,
     amount: string,
     side: number,
     price: Decimal
 }
-export type TickerFormData = z.infer<typeof tickerSchema>
+export type OrderFormData = z.infer<typeof orderFormSchema>

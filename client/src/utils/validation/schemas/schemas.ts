@@ -10,8 +10,17 @@ const instrumentLSSchema = z.object({
 })
 
 export const subscriptionSchema = z.object({
-    subscriptionId: z.number(),
-    instrument: instrumentLSSchema,
+	subscriptionId: z.number(),
+	instrument: instrumentLSSchema,
+	quotes: z.array(
+		z.object({
+			bid: z.string().transform(num => new Decimal(num)),
+			offer: z.string().transform(num => new Decimal(num)),
+			bidAmount: z.string().transform(num => new Decimal(num)),
+			offerAmount: z.string().transform(num => new Decimal(num)),
+			timestamp: z.number().max(Date.now()).min(0),
+		})
+	),
 })
 
 export const subscriptionArraySchema = z.array(subscriptionSchema)

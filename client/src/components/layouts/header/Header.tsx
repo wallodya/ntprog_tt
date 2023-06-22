@@ -1,18 +1,17 @@
-import * as Dialog from "@radix-ui/react-dialog"
 import Button from "components/ui/Button"
 import Card from "components/ui/Card"
 import DialogContainer from "components/ui/dialog/DialogContainer"
 import { useAuth } from "features/auth/AuthProvider"
 import AuthForm from "features/auth/form/AuthForm"
-import Ticker from "features/ticker/Ticker"
 import SignOutButton from "./SignOutButton"
 
-const NewBidButton = () => {
+const Title = () => {
 	return (
-		<DialogContainer>
-			<Button styleType="primary">New order</Button>
-			<Ticker />
-		</DialogContainer>
+		<div>
+            <h1 className="font-semibold text-neutral-900/70">
+                Test task for NT Progress
+            </h1>
+        </div>
 	)
 }
 
@@ -31,7 +30,7 @@ const Header = () => {
 	return (
 		<Card>
 			<div className="flex justify-between items-center">
-				<NewBidButton />
+				<Title />
 				<div>
 					{user ? (
 						<div className="flex gap-8 items-center">

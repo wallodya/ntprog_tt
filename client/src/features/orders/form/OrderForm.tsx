@@ -1,50 +1,64 @@
-import { useTicker } from "./TickerFormProvider"
+import { useOrder } from "./OrderFormProvider"
 import AmountInput from "./components/AmountInput"
 import InstrumentInput from "./components/InstrumentInput"
-import TickerOrderActions from "./components/TickerOrderActions"
+import TickerOrderActions from "./components/OrderFormActions"
 import PriceInput from "./components/PriceInput"
 import { useAuth } from "features/auth/AuthProvider"
-import SubscriptionQuotes from "features/quotes/components/SubscriptionQuotes"
+import SubscriptionQuotes from "features/subscriptions/components/TickerQuotes"
 import { useEffect, useState } from "react"
-import { MarketSubscription } from "models/Base"
 import Card from "components/ui/Card"
 import Button from "components/ui/Button"
-import { useSocket } from "utils/socket/SocketProvider"
-// import MarketQuotes from "features/quotes/MarketQuotes"
+import { useSubscriptions } from "features/subscriptions/SubscriptionsProvider"
+import { MarketDataUpdate } from "models/ServerMessages"
 
-const TickerForm = () => {
-    const userData = useAuth()
-	const [subscription, setSubscription] = useState<MarketSubscription | null>(
-		userData.user
-			? userData.subscriptions.find(
+const useSelectedInstrument = () => {
+    const { user } = useAuth()
+    const { watch } = useOrder()
+    const { subscriptions } = useSubscriptions()
+
+    const [subscription, setSubscription] = useState<MarketDataUpdate | null>(
+		user
+			? subscriptions.find(
 					sub => sub.instrument.instrumentId === 1
 			  ) ?? null
 			: null
 	)
-	const { handleSubmit, watch } = useTicker()
-    const socket = useSocket()
+    const [instrumentId, setInstrumentId] = useState<number>(1)
 
-	useEffect(() => {
-		if (!userData.user) {
+    useEffect(() => {
+		if (!user) {
 			return
 		}
 
 		const { unsubscribe } = watch(values => {
 			setSubscription(
-				userData.subscriptions.find(
+				subscriptions.find(
 					sub =>
 						sub.instrument.instrumentId ===
 						Number(values.instrument)
 				) ?? null
 			)
+            setInstrumentId(Number(values.instrument ?? 1))
 		})
 		return () => unsubscribe()
 	}, [])
 
+    return { subscription, instrumentId }
+}
+
+const OrderForm = () => {
+    const { user } = useAuth()
+
+	const { handleSubmit } = useOrder()
+    const { subscribe } = useSubscriptions()
+    const { subscription, instrumentId } = useSelectedInstrument()
+
     const handleSubscribe = () => {
-        if (socket.connection && subscription) {
-            socket.subscribeMarketData(subscription.instrument.instrumentId)
-        }
+        subscribe(instrumentId)
+    }
+
+    if (!user) {
+        return null
     }
 
 	return (
@@ -102,4 +116,4 @@ const TickerForm = () => {
 	)
 }
 
-export default TickerForm
+export default OrderForm

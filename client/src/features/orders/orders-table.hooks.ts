@@ -1,21 +1,20 @@
-import {
-    PaginationState,
-    Row,
-	SortingState,
-	getCoreRowModel,
-	getSortedRowModel,
-	useReactTable,
-} from "@tanstack/react-table"
-import { useEffect, useMemo, useState } from "react"
-import { Order } from "models/Base"
-import columns from "./orders-table-columns"
-import { useSocket } from "utils/socket/SocketProvider"
-import { ExecutionReport } from "models/ServerMessages"
 import { useQuery } from "@tanstack/react-query"
-import { toast } from "react-toastify"
+import {
+    SortingState,
+    getCoreRowModel,
+    getSortedRowModel,
+    useReactTable
+} from "@tanstack/react-table"
 import { isServerHttpException } from "features/auth/types/auth.types"
-import { ordersDataSchema } from "./order.schema"
+import { Order } from "models/Base"
+import { ExecutionReport } from "models/ServerMessages"
+import { useEffect, useState } from "react"
+import { toast } from "react-toastify"
+import { useSocket } from "utils/socket/SocketProvider"
+
+import columns from "./orders-table-columns"
 import { useOrdersTablePagination } from "./pagination/orders-pagination.hooks"
+import { ordersDataSchema } from "utils/validation/schemas/order.schema"
 
 const fetchOrders = async (page: number) => {
 

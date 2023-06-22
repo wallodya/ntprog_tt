@@ -1,26 +1,36 @@
 import Decimal from "decimal.js"
 import { useState, ChangeEventHandler, KeyboardEventHandler } from "react"
-import { useTicker } from "../TickerFormProvider"
+import { useOrder } from "../OrderFormProvider"
 import FormFieldError from "components/ui/FormFieldError"
 import { FieldError } from "react-hook-form"
 
 const PriceInput = () => {
     const {
-		tickerPrice: price,
-		setTickerPrice: setPrice,
+		orderPrice: price,
+		setOrderPrice: setPrice,
 		formState: {
 			errors: { price: priceFieldError },
 		},
-	} = useTicker()
+	} = useOrder()
 
 	const [dollars, setDollars] = useState<string>("")
     const [cents, setCents] = useState<string>("")
 
 	const handleCentsChange: ChangeEventHandler<HTMLInputElement> = e => {
         const val = e.target.value
+
 		setCents(val)
         const num = new Decimal(Number(val))
-        setPrice(price.floor().plus(num.greaterThanOrEqualTo(10) ? num.div(100) : num.div(10)))
+
+        setPrice(
+			price
+				.floor()
+				.plus(
+					num.greaterThanOrEqualTo(10) || val.startsWith("0")
+						? num.div(100)
+						: num.div(10)
+				)
+		)
 	}
     
     const handleDollarsChange:ChangeEventHandler<HTMLInputElement> = (e) => {

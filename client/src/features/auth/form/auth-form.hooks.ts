@@ -1,14 +1,16 @@
 import { useMutation } from "@tanstack/react-query"
+import { toast } from "react-toastify"
+import { useAuth } from "../AuthProvider"
+import { isServerHttpException } from "../types/auth.types"
+import userSchema from "../../../utils/validation/schemas/user-data.schema"
 import { LoginData } from "./login.schema"
 import { RegisterData } from "./register.schema"
-import { useAuth } from "../AuthProvider"
-import { isServerHttpException, isUserDataResponseType } from "../types/auth.types"
-import { toast } from "react-toastify"
-import userSchema from "../types/user-data.schema"
+import { useSubscriptions } from "features/subscriptions/SubscriptionsProvider"
 
 export const useAuthFetch = (endpoint: "login" | "register") => {
 
     const { updateUser } = useAuth()
+    const { setSubscriptions } = useSubscriptions()
 
     const fetchRegister = async (data: RegisterData | LoginData) => {
         const url = process.env["REACT_APP_SERVER_URL"]
@@ -53,6 +55,12 @@ export const useAuthFetch = (endpoint: "login" | "register") => {
 
         if (userData.success) {
             updateUser(userData.data)
+            setSubscriptions(
+                userData.data.subscriptions.map(sub => ({
+                    ...sub,
+                    quotes: []
+                }))
+            )
             return
         }
 

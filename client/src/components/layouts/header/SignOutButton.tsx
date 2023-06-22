@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import Button from "components/ui/Button"
 import { useAuth } from "features/auth/AuthProvider"
+import { useSubscriptions } from "features/subscriptions/SubscriptionsProvider"
 
 const fetchSignOut = async () => {
     const url = process.env["REACT_APP_SERVER_URL"]
@@ -18,12 +19,14 @@ const fetchSignOut = async () => {
 }
 
 const SignOutButton = () => {
-    const { controls: { removeUser } } = useAuth()
+    const { removeUser } = useAuth()
+    const { clearSubscriptions } = useSubscriptions()
 
     const { mutate: signOut } = useMutation(fetchSignOut)
 
     const handleSignOut = () => {
         removeUser()
+        clearSubscriptions()
         signOut()
     }
 

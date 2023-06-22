@@ -1,16 +1,12 @@
-import Button from "components/ui/Button"
-import { MarketSubscription, Quote } from "models/Base"
-import SubscriptionQuotes from "./SubscriptionQuotes"
-import QuotesChart from "../chart/QuotesChartContainer"
+import { Quote } from "models/Base"
 import { useState } from "react"
+import { useSubscriptions } from "../SubscriptionsProvider"
+import QuotesChart from "../chart/QuotesChartContainer"
+import SubscriptionQuotes from "./TickerQuotes"
 import NewSubscriptionButton from "./new-subscription/NewSubscriptionButton"
 
-const UserSubcriptions = ({
-	subscriptions,
-}: {
-	subscriptions: MarketSubscription[]
-}) => {
-
+const UserTickers = () => {
+    const {subscriptions} = useSubscriptions()
     const [chartData, setChartData] = useState<Quote[] | null>(null)
     const [instrumentOnChart, setInstrumentOnChart] = useState<number | null>(null)
 
@@ -54,4 +50,4 @@ const UserSubcriptions = ({
 	)
 }
 
-export default UserSubcriptions
+export default UserTickers

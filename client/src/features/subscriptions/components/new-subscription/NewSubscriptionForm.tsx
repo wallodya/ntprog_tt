@@ -4,6 +4,7 @@ import FormFieldError from "components/ui/FormFieldError"
 import { useDialogContext } from "components/ui/dialog/DialogContainer"
 import { useAuth } from "features/auth/AuthProvider"
 import { useInstruments } from "features/instruments/InstrumentsProvider"
+import { useSubscriptions } from "features/subscriptions/SubscriptionsProvider"
 import React from "react"
 import { useForm } from "react-hook-form"
 import { useSocket } from "utils/socket/SocketProvider"
@@ -27,42 +28,47 @@ const NewSubscriptionForm = () => {
 		resolver: zodResolver(subcribeMarketSchema),
 	})
 
-    
-    const socket = useSocket()
-    const userData = useAuth()
+    const { user } = useAuth()
     const { setOpen } = useDialogContext()
+    const { subscribe, subscriptions } = useSubscriptions()
 
     const onSubmit = (data: SubscribeMarketDataIn) => {
-        if (!userData.user) {
+        if (!user) {
             return
         }
-        socket.subscribeMarketData(data.instrumentId)
+        subscribe(data.instrumentId)
         setOpen(false)
     }
 
     const instruments = useInstruments()
 
 	return (
-		<form className="flex flex-col w-64" onSubmit={handleSubmit(onSubmit)}>    
-            <label
-                htmlFor="instrument"
-                className="font-semibold text-neutral-900/50"
-            >
-                Choose instrument
-            </label>
-            <FormFieldError err={instrumentFieldError} />
-            <select
-                {...register("instrumentId")}
-                className="px-5 py-3 w-full mb-12 rounded-lg border border-neutral-500/50 text-neutral-900 bg-transparent"
-            >
-                {
-                    instruments.map(i => 
-                        <option key={i.instrumentId} value={i.instrumentId}>{i.name}</option>
-                    )
-                }
-            </select>
+		<form className="flex flex-col w-64" onSubmit={handleSubmit(onSubmit)}>
+			<label
+				htmlFor="instrument"
+				className="font-semibold text-neutral-900/50"
+			>
+				Choose instrument
+			</label>
+			<FormFieldError err={instrumentFieldError} />
+			<select
+				{...register("instrumentId")}
+				className="px-5 py-3 w-full mb-12 rounded-lg border border-neutral-500/50 text-neutral-900 bg-transparent"
+			>
+				{instruments.map(
+					i => 
+						!subscriptions.find(
+							sub =>
+								sub.instrument.instrumentId === i.instrumentId
+						) && (
+							<option key={i.instrumentId} value={i.instrumentId}>
+								{i.name}
+							</option>
+						)
+				)}
+			</select>
 
-            <Button styleType="primary">Subscribe</Button>
+			<Button styleType="primary">Subscribe</Button>
 		</form>
 	)
 }
