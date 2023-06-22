@@ -5,13 +5,14 @@ import { MARKET_UPDATE_EVENT_NAME, deleteSubscriptions, getSavedSubscriptions, s
 import { useAuth } from "features/auth/AuthProvider"
 
 export const useSavedSubscriptions = () => {
-	const [subscriptions, setSubscriptions] = useState<MarketDataUpdate[]>(getSavedSubscriptions)
+	// const [subscriptions, setSubscriptions] = useState<MarketDataUpdate[]>(getSavedSubscriptions)
+	const [subscriptions, setSubscriptions] = useState<MarketDataUpdate[]>([])
     const socket = useSocket()
     const { user } = useAuth()
 
 	const removeSubscription = (id: number) => {
 		setSubscriptions(s => s.filter(sub => sub.subscriptionId !== id))
-		saveSubscriptions(getSavedSubscriptions().filter(sub => sub.subscriptionId !== id))
+		// saveSubscriptions(getSavedSubscriptions().filter(sub => sub.subscriptionId !== id))
 	}
 
     const unsubscribe = (subscriptionId: number) => {
@@ -30,14 +31,14 @@ export const useSavedSubscriptions = () => {
 	}
 
 	const addSubscription = (sub: MarketDataUpdate) => {
-		setSubscriptions(s => [...subscriptions, sub])
-		saveSubscriptions([...subscriptions, sub])
-        console.debug("Added new subscription: ", sub, getSavedSubscriptions())
+		setSubscriptions(s => [...s, sub])
+		// saveSubscriptions([...subscriptions, sub])
+        console.debug("Added new subscription: ", sub)
 	}
 
     const setAllSubscriptions = (subs: MarketDataUpdate[]) => {
         setSubscriptions(s => subs)
-        saveSubscriptions(subs)
+        // saveSubscriptions(subs)
     }
 
     const updateSubscription = (data: MarketDataUpdate) => {
@@ -54,7 +55,7 @@ export const useSavedSubscriptions = () => {
 
         if (wasUpdated) {
             setSubscriptions(updatedSubscriptions)
-            saveSubscriptions(updatedSubscriptions)
+            // saveSubscriptions(updatedSubscriptions)
             return
         }
 
@@ -63,7 +64,7 @@ export const useSavedSubscriptions = () => {
 
 	const clearSubscriptions = () => {
 		setSubscriptions(s => [])
-		deleteSubscriptions()
+		// deleteSubscriptions()
 	}
 
 	return {
