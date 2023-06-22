@@ -5,6 +5,7 @@ import Card from "components/ui/Card"
 import OrdersSorting from "./OrdersSorting"
 import { useOrdersTable } from "./orders.hooks"
 import DownloadOrders from "./DownloadOrders"
+import OrdersPaginationControls from "./pagination/OrdersPaginationControls"
 
 const Orders = () => {
 
@@ -51,6 +52,7 @@ const Orders = () => {
 					))}
 				</tbody>
 			</table>
+            <OrdersPaginationControls table={table}/>
 		</Card>
 	)
 }

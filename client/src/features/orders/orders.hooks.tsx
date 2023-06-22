@@ -1,11 +1,12 @@
 import {
+    PaginationState,
     Row,
 	SortingState,
 	getCoreRowModel,
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Order } from "models/Base"
 import columns from "./orders-table-columns"
 import { useSocket } from "utils/socket/SocketProvider"
@@ -14,7 +15,7 @@ import { useQuery } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import { isServerHttpException } from "features/auth/types/auth.types"
 import { ordersDataSchema } from "./order.schema"
-import Decimal from "decimal.js"
+import { useOrdersTablePagination } from "./pagination/orders-pagination.hooks"
 
 const fetchOrders = async (page: number) => {
 
@@ -56,24 +57,30 @@ const fetchOrders = async (page: number) => {
 export const useOrdersTable = () => {
 	const socket = useSocket()
 	const [data, setData] = useState<Order[]>([])
-
-	useQuery(["orders", 1], () => fetchOrders(1), {
+    
+	const [sorting, setSorting] = useState<SortingState>([])
+    const { pagination, setPagination, pageCount} = useOrdersTablePagination()
+    
+	useQuery(["orders", pagination.pageIndex], () => fetchOrders(pagination.pageIndex + 1), {
         onSuccess: (data) => {
             setData(data)
-        }
+        },
+        keepPreviousData: true
     })
-
-	const [sorting, setSorting] = useState<SortingState>([])
 
 	const table = useReactTable({
 		data,
 		columns,
+        pageCount,
 		state: {
 			sorting,
+            pagination
 		},
 		onSortingChange: setSorting,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
+        manualPagination: true,
+        onPaginationChange: setPagination
 	})
 
 	const onExecutionReport = (message: ExecutionReport) => {

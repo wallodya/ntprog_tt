@@ -44,7 +44,7 @@ const PriceInput = () => {
 			>
 				Your price
 			</label>
-			<FormFieldError err={priceFieldError as FieldError} />
+			<FormFieldError err={priceFieldError as FieldError} />  
 			<div className="mb-12 w-full flex py-3 rounded-lg border border-neutral-500/50 text-neutral-900 bg-transparent focus-within:outline focus-within:outline-blue-500">
 				<span className="ml-5 mr-2 text-neutral-400">$</span>
 				<input
