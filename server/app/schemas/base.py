@@ -138,6 +138,7 @@ class QuoteData(pydantic.BaseModel):
     offer: float
     bid_amount: int
     offer_amount: int
+    timestamp: int
 
 
 MessageT = TypeVar('MessageT', bound=Message)

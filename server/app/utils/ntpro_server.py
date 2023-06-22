@@ -3,6 +3,8 @@ import pydantic
 import starlette.datastructures
 from app.models.market_subscription import MarketSubscription
 
+from app.exchange.notifications import NotificationService
+
 from logging import  getLogger
 
 from app.schemas import client_messages, server_messages, base
@@ -36,6 +38,15 @@ class NTProServer:
 
         self.logger.info(
             f"Accepted new connection for user: {websocket.state.user.login}"
+        )
+
+        await NotificationService.notify_for_all_subscriptions(
+            self,
+            self.connections[websocket.client]
+        )
+
+        self.logger.info(
+            f"Sent current market quotes for user: {websocket.state.user.login}"
         )
 
     def disconnect(self, websocket: fastapi.WebSocket):

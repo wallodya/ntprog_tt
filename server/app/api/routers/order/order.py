@@ -1,5 +1,7 @@
 from typing import Annotated, Union
 from uuid import uuid4
+from math import ceil
+from app.models.order import Order
 from fastapi import APIRouter, BackgroundTasks, Query
 from fastapi.responses import FileResponse
 
@@ -58,6 +60,15 @@ async def get_orders(
 ) -> list[OrderData]:
     
     return await get_orders_for_page(page)
+
+@order_router.get(
+    "/page-count",
+    summary="Page count",
+    description="Returns orders page count"
+)
+async def get_orders_page_count() -> int:
+    orders_count = await Order.objects.count()
+    return ceil(orders_count / 20)
 
 
 @order_router.get(

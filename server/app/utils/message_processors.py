@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 import ormar
+from app.exchange.notifications import NotificationService
 from app.exchange.process_orders import ProcessOrder
 
 from app.models.instrument import Instrument
@@ -50,10 +51,12 @@ async def subscribe_market_data_processor(
         user=websocket.state.user
     )
 
+    await NotificationService.notify_for_new_subscription(server, websocket, subscription)
+
     server.logger.info("Subscribe market data message was processed successfully")
 
     return server_messages.SuccessInfo(info={
-        "subscription_id": subscription.id
+        "subscription_id": subscription.id,
     })
 
 

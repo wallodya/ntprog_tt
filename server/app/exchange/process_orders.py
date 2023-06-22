@@ -85,7 +85,6 @@ class ProcessOrder():
     
     def set_random_status(self) -> None:
         self.random_status = random.choice(list(OrderStatus))
-        self.random_status = OrderStatus.rejected
 
     
     async def update_position(self) -> None:
