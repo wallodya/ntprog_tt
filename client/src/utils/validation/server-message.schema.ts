@@ -26,7 +26,7 @@ export const errorInfoMessageSchema = z.object({
 })
 
 export const successInfoMessageSchema = z.object({
-	info: z.string(),
+	info: z.any(),
 })
 
 export const executionReportMessageSchema = z

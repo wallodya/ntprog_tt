@@ -1,63 +1,125 @@
 import Decimal from "decimal.js"
 import { useAuth } from "features/auth/AuthProvider"
-import { Quote } from "models/Base"
+import { MarketSubscription, Quote } from "models/Base"
+import { MarketDataUpdate } from "models/ServerMessages"
 import { useEffect, useState } from "react"
 import { useSocket } from "utils/socket/SocketProvider"
+import { deleteSubscriptions, getSavedSubscriptions, saveSubscriptions } from "./subscriptions.utils"
 
-const MOCK_QUOTES: Quote[] = [
-	{
-		timestamp: Date.now(),
-		bid: new Decimal(9.987),
-		offer: new Decimal(10.005),
-		bidAmount: new Decimal(300),
-		offerAmount: new Decimal(570),
-	},
-	{
-		timestamp: Date.now(),
-		bid: new Decimal(9.987),
-		offer: new Decimal(10.005),
-		bidAmount: new Decimal(300),
-		offerAmount: new Decimal(570),
-	},
-	{
-		timestamp: Date.now(),
-		bid: new Decimal(9.987),
-		offer: new Decimal(10.005),
-		bidAmount: new Decimal(300),
-		offerAmount: new Decimal(570),
-	},
-]
+export const useSavedSubscriptions = () => {
+	const [subscriptions, setSubscriptions] = useState<MarketSubscription[]>(getSavedSubscriptions)
 
-export const useMarketSubscription = (subscriptionId: number) => {
-    const socket = useSocket()
-    const userData = useAuth()
+	const removeSubscription = (id: number) => {
+		setSubscriptions(s => s.filter(sub => sub.subscriptionId !== id))
+		saveSubscriptions(getSavedSubscriptions().filter(sub => sub.subscriptionId !== id))
+	}
 
-    const [quotes, setQuotes] = useState<Quote[]>(MOCK_QUOTES)
+	const addSubscription = (sub: MarketSubscription) => {
+		saveSubscriptions([...getSavedSubscriptions(), sub])
+		setSubscriptions(s => getSavedSubscriptions())
+        console.debug("Added new subscription: ", sub, getSavedSubscriptions())
+	}
 
-    const onMarketUpdate = (quotes: Quote[]) => {
-        console.debug("Market quotes updated")
-        setQuotes(quotes)
+    const setAllSubscriptions = (subs: MarketSubscription[]) => {
+        setSubscriptions(s => subs)
+        saveSubscriptions(subs)
     }
-    useEffect(() => {
-        const eventName = `market-update-${subscriptionId}`
-        console.debug("event name in hook : ", eventName)
-        socket.on(eventName, onMarketUpdate)
-        return () => {socket.removeListener(eventName, onMarketUpdate)}
-    }, [])
 
-    const latestQuote = quotes[0]
+	const clearSubscriptions = () => {
+		setSubscriptions(s => [])
+		deleteSubscriptions()
+	}
 
-    const unsubscribe = () => {
-        if (!userData.user) {
+	return {
+		subscriptions,
+		addSubscription,
+		removeSubscription,
+		clearSubscriptions,
+		setSubscriptions: setAllSubscriptions,
+	}
+}
+
+export const useNewScubscription = () => {
+    const socket = useSocket()
+    const { controls: { addSubscription } } = useAuth()
+
+    const onNewSubscription = (data: MarketDataUpdate) => {
+
+        const savedSubscriptions = getSavedSubscriptions()
+
+        if (!savedSubscriptions) {
+            addSubscription({
+                instrument: data.instrument,
+                subscriptionId: data.subscriptionId
+            })
             return
         }
-        socket.unsubscribeMarketData(subscriptionId)
-        userData.controls.removeSubscription(subscriptionId)
+
+        const existingSubscription = savedSubscriptions.find(
+			sub => sub.subscriptionId === data.subscriptionId
+		)
+        
+        if (!existingSubscription) {
+            addSubscription({
+                instrument: data.instrument,
+                subscriptionId: data.subscriptionId
+            })
+            socket.emit("market-update", data)
+        }
     }
 
-    return {
-        latestQuote,
-        quotes,
-        unsubscribe
-    }
+    useEffect(() => {
+        const eventName = "market-update"
+        socket.on(eventName, onNewSubscription)
+        return () => {
+            socket.removeListener(eventName, onNewSubscription)
+        }
+    },[socket])
+}
+
+export const useMarketSubscription = (subscriptionId: number) => {
+	const socket = useSocket()
+	const userData = useAuth()
+
+	const nullQuote: Quote = {
+		timestamp: Date.now(),
+		bid: new Decimal(0),
+		offer: new Decimal(0),
+		bidAmount: new Decimal(0),
+		offerAmount: new Decimal(0),
+	}
+
+	const [quotes, setQuotes] = useState<Quote[]>([])
+	const [latestQuote, setLatestQuote] = useState<Quote>(nullQuote)
+
+	const onMarketUpdate = (data: MarketDataUpdate) => {
+		if (data.subscriptionId !== subscriptionId) {
+			return
+		}
+		console.debug("Market quotes updated")
+		setQuotes(data.quotes)
+		setLatestQuote(data.quotes[0] ?? nullQuote)
+	}
+	useEffect(() => {
+		const eventName = "market-update"
+
+		socket.on(eventName, onMarketUpdate)
+		return () => {
+			socket.removeListener(eventName, onMarketUpdate)
+		}
+	}, [])
+
+	const unsubscribe = () => {
+		if (!userData.user) {
+			return
+		}
+		socket.unsubscribeMarketData(subscriptionId)
+		userData.controls.removeSubscription(subscriptionId)
+	}
+
+	return {
+		latestQuote,
+		quotes,
+		unsubscribe,
+	}
 }

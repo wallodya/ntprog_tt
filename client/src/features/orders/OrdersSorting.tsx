@@ -1,6 +1,6 @@
 import { Table } from "@tanstack/react-table"
 import { Order } from "models/Base"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 type OrdersSortingState =
 	| "none"
@@ -16,6 +16,7 @@ type OrdersSortingState =
 	| "updatedAtDesc"
 
 const useOrdersSorting = (table: Table<Order>) => {
+
 	const sortPrice =
 		table.getFlatHeaders().find(h => h.id === "price")?.column
 			.toggleSorting ?? (() => {})

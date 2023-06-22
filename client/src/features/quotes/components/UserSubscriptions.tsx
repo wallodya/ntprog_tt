@@ -3,6 +3,7 @@ import { MarketSubscription, Quote } from "models/Base"
 import SubscriptionQuotes from "./SubscriptionQuotes"
 import QuotesChart from "../chart/QuotesChartContainer"
 import { useState } from "react"
+import NewSubscriptionButton from "./new-subscription/NewSubscriptionButton"
 
 const UserSubcriptions = ({
 	subscriptions,
@@ -30,7 +31,7 @@ const UserSubcriptions = ({
 		<>
 			<div className="mb-8 w-full flex justify-between items-baseline">
 				<h2 className="font-bold text-2xl">Subscriptions</h2>
-				<Button styleType="primary">New subscription</Button>
+				<NewSubscriptionButton/>
 			</div>
 			{subscriptions.length === 0 ? (
 				<p>You don't have any subscriptions yet</p>

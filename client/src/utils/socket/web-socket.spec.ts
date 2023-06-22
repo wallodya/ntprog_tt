@@ -69,7 +69,7 @@ describe("WSConnector", () => {
 			const data: SubscribeMarketDataEnvelope = {
 				messageType: ClientMessageType.subscribeMarketData,
 				message: {
-					instrument: 1,
+					instrument_id: 1,
 				},
 			}
 			socket.send(data)
@@ -84,7 +84,7 @@ describe("WSConnector", () => {
 			const data: SubscribeMarketDataEnvelope = {
 				messageType: ClientMessageType.subscribeMarketData,
 				message: {
-					instrument: 1,
+					instrument_id: 1,
 				},
 			}
 			socket.send(data)
@@ -99,7 +99,7 @@ describe("WSConnector", () => {
 			const data: UnsubscribeMarketDataEnvelope = {
 				messageType: ClientMessageType.unsubscribeMarketData,
 				message: {
-					subscriptionId: 1,
+					subscription_id: 1,
 				},
 			}
 			socket.send(data)
@@ -132,7 +132,7 @@ describe("WSConnector", () => {
 			const data: CancelOrderEnvelope = {
 				messageType: ClientMessageType.cancelOrder,
 				message: {
-					orderId: "order-id",
+					order_id: "order-id",
 				},
 			}
 			socket.send(data)
@@ -156,7 +156,7 @@ describe("WSConnector", () => {
 			const data: SubscribeMarketDataEnvelope = {
 				messageType: ClientMessageType.subscribeMarketData,
 				message: {
-					instrument: 1,
+					instrument_id: 1,
 				},
 			}
 			socket.subscribeMarketData(1)
@@ -172,7 +172,7 @@ describe("WSConnector", () => {
 			const data: SubscribeMarketDataEnvelope = {
 				messageType: ClientMessageType.subscribeMarketData,
 				message: {
-					instrument: 1,
+					instrument_id: 1,
 				},
 			}
 			socket.subscribeMarketData(1)
@@ -196,7 +196,7 @@ describe("WSConnector", () => {
 			const data: UnsubscribeMarketDataEnvelope = {
 				messageType: ClientMessageType.unsubscribeMarketData,
 				message: {
-					subscriptionId: 1,
+					subscription_id: 1,
 				},
 			}
 			socket.unsubscribeMarketData(1)
@@ -212,7 +212,7 @@ describe("WSConnector", () => {
 			const data: UnsubscribeMarketDataEnvelope = {
 				messageType: ClientMessageType.unsubscribeMarketData,
 				message: {
-					subscriptionId: 1,
+					subscription_id: 1,
 				},
 			}
 			socket.unsubscribeMarketData(1)
@@ -294,7 +294,7 @@ describe("WSConnector", () => {
 			const data: CancelOrderEnvelope = {
 				messageType: ClientMessageType.cancelOrder,
 				message: {
-					orderId: "order-id",
+					order_id: "order-id",
 				},
 			}
 			socket.cancelOrder("order-id")
@@ -310,7 +310,7 @@ describe("WSConnector", () => {
             const data: CancelOrderEnvelope = {
 				messageType: ClientMessageType.cancelOrder,
 				message: {
-					orderId: "order-id",
+					order_id: "order-id",
 				},
 			}
 			socket.cancelOrder("order-id")

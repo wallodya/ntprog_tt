@@ -1,5 +1,5 @@
 import { OrderStatus, ServerMessageType } from "types/Enums"
-import { Envelope, Message, Quote } from "./Base"
+import { Envelope, Instrument, Message, Quote } from "./Base"
 
 export type ServerEnvelope =
 	| ErrorInfoEnvelope
@@ -19,7 +19,7 @@ export interface ErrorInfoEnvelope extends Envelope {
 }
 
 export interface SuccessInfo extends ServerMessage {
-    info: string
+    info: any
 }
 
 export interface SuccessInfoEnvelope extends Envelope {
@@ -39,7 +39,7 @@ export interface ExecutionReportEnvelope extends Envelope {
 
 export interface MarketDataUpdate extends ServerMessage {
 	subscriptionId: number
-	instrument: string
+	instrument: Instrument
 	quotes: [Quote]
 }
 

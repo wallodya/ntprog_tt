@@ -1,4 +1,5 @@
 import {
+    Row,
 	SortingState,
 	getCoreRowModel,
 	getSortedRowModel,
@@ -13,8 +14,9 @@ import { useQuery } from "@tanstack/react-query"
 import { toast } from "react-toastify"
 import { isServerHttpException } from "features/auth/types/auth.types"
 import { ordersDataSchema } from "./order.schema"
+import Decimal from "decimal.js"
 
-const fetchOrders = async () => {
+const fetchOrders = async (page: number) => {
 
 	const url = process.env["REACT_APP_SERVER_URL"]
 
@@ -22,7 +24,7 @@ const fetchOrders = async () => {
 		return []
 	}
 
-	const response = await fetch(`${url}/orders?page=1`, {
+	const response = await fetch(`${url}/orders?page=${page > 0 ? Math.floor(page) : 1}`, {
 		method: "GET",
 		credentials: "include",
 	})
@@ -52,11 +54,10 @@ const fetchOrders = async () => {
 }
 
 export const useOrdersTable = () => {
-	//TODO need to fetch this from server
 	const socket = useSocket()
 	const [data, setData] = useState<Order[]>([])
 
-	useQuery(["orders", 1], fetchOrders, {
+	useQuery(["orders", 1], () => fetchOrders(1), {
         onSuccess: (data) => {
             setData(data)
         }

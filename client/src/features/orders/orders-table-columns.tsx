@@ -1,4 +1,4 @@
-import { createColumnHelper } from "@tanstack/react-table"
+import { Row, createColumnHelper } from "@tanstack/react-table"
 import { Order } from "models/Base"
 import AmountCell from "./cells/AmountCell"
 import IDCell from "./cells/IDCell"
@@ -8,6 +8,7 @@ import SideCell from "./cells/SideCell"
 import StatusCell from "./cells/StatusCell"
 import TimeCell from "./cells/TimeCell"
 import CancelOrderCell from "./cells/CancelOrderCell"
+import Decimal from "decimal.js"
 
 export const columnHelper = createColumnHelper<Order>()
 
@@ -42,6 +43,11 @@ const columns = [
 	columnHelper.accessor("price", {
         header: () => <div className="w-full text-right">Price</div>,
 		cell: info => <PriceCell side={info.row.original.side} dec= {info.getValue()}/>,
+        sortingFn: (rowA: Row<Order>, rowB : Row<Order>) => {
+            const valA = rowA.getValue<Decimal>("price")
+            const valB = rowB.getValue<Decimal>("price")
+            return valA.greaterThan(valB) ? 1 : -1
+        }
 	}),
 	columnHelper.accessor("instrument", {
         header: () => <div className="w-full text-left">Instrument</div>,

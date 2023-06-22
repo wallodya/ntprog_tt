@@ -34,7 +34,6 @@ export default class WSConnector extends EventEmitter {
 		}
 
 		this.connection.onmessage = event => {
-            console.debug("Message recieved")
             const envelope = this._validate(event.data)
 			if (envelope) {
                 this._callMessageHandler(envelope)
@@ -59,7 +58,7 @@ export default class WSConnector extends EventEmitter {
 		this.send({
 			messageType: ClientMessageType.subscribeMarketData,
 			message: {
-				instrument,
+				instrument_id: instrument,
 			},
 		})
 	}
@@ -68,7 +67,7 @@ export default class WSConnector extends EventEmitter {
 		this.send({
 			messageType: ClientMessageType.unsubscribeMarketData,
 			message: {
-				subscriptionId,
+				subscription_id: subscriptionId,
 			},
 		})
 	}
@@ -89,7 +88,7 @@ export default class WSConnector extends EventEmitter {
 		this.send({
 			messageType: ClientMessageType.cancelOrder,
 			message: {
-				orderId,
+				order_id: orderId,
 			},
 		})
 	}
@@ -99,9 +98,21 @@ export default class WSConnector extends EventEmitter {
     }
 
 	private _callMessageHandler(envelope: ServerEnvelope) {
-        console.debug("Message type: ", envelope.messageType)
+        console.debug(
+			`>>>Recieved envelope. Type: ${envelope.messageType}. Message:`, envelope.message
+		)
 		switch (envelope.messageType) {
 			case ServerMessageType.success: {
+                if (
+					typeof envelope.message.info === "object" &&
+					"subscription_id" in envelope.message.info
+				) {
+					toast.success(`
+                        Subscribed (id: 
+                            ${envelope.message.info.subscription_id}
+                        )
+                    `)
+				}
                 toast.success(envelope.message.info)
                 return
             }
@@ -120,11 +131,9 @@ export default class WSConnector extends EventEmitter {
                 return
             }
 			case ServerMessageType.marketDataUpdate: {
-                console.debug("Emitting market update event")
-                console.debug("Event name in WSClient: ", `market-update-${envelope.message.subscriptionId}`)
                 this.emit(
-					`market-update-${envelope.message.subscriptionId}`,
-					envelope.message.quotes
+					`market-update`,
+					envelope.message
 				)
                 return
             }

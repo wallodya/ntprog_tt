@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react"
-import Card from "./Card"
+import Card from "../Card"
 
 const DialogContentWrapper = ({ children }: { children: ReactNode }) => {
 	return (

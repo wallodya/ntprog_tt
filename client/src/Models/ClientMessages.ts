@@ -9,7 +9,7 @@ export type ClientEnvelope =
 	| CancelOrderEnvelope
 
 export interface SubscribeMarketData {
-    instrument: Instrument["instrumentId"]
+    instrument_id: Instrument["instrumentId"]
 }
 
 export interface SubscribeMarketDataEnvelope extends Envelope {
@@ -18,7 +18,7 @@ export interface SubscribeMarketDataEnvelope extends Envelope {
 }
 
 export interface UnsubscribeMarketData {
-    subscriptionId: number
+    subscription_id: number
 }
 
 export interface UnsubscribeMarketDataEnvelope extends Envelope {
@@ -38,7 +38,7 @@ export interface PlaceOrderEnvelope extends Envelope {
 }
 
 export interface CancelOrder {
-    orderId: string
+    order_id: string
 }
 export interface CancelOrderEnvelope extends Envelope {
     messageType: ClientMessageType.cancelOrder,

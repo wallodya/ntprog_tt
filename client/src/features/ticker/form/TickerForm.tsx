@@ -1,5 +1,3 @@
-import MarketQuotes from "./components/MarketQuotes"
-
 import { useTicker } from "./TickerFormProvider"
 import AmountInput from "./components/AmountInput"
 import InstrumentInput from "./components/InstrumentInput"

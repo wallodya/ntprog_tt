@@ -2,6 +2,9 @@ import Card from "components/ui/Card"
 
 import { useAuth } from "features/auth/AuthProvider"
 import UserSubcriptions from "./components/UserSubscriptions"
+import { useNewScubscription } from "./subscriptions.hooks"
+import { MarketSubscription } from "models/Base"
+import { useEffect, useState } from "react"
 
 const SignInPrompt = () => {
 	return (
@@ -14,10 +17,18 @@ const SignInPrompt = () => {
 const Quotes = () => {
 	const userData = useAuth()
 
+    const [displayedSubscriptions, setDisplayedSubscriptions] = useState<MarketSubscription[]>(userData.subscriptions)
+
+    useEffect(() => {
+        setDisplayedSubscriptions(userData.subscriptions)
+    }, [userData.subscriptions, userData.subscriptions.length])
+
+    useNewScubscription()
+
 	return (
 		<Card>
 			{userData.user ? (
-                <UserSubcriptions subscriptions={userData.subscriptions} />
+                <UserSubcriptions subscriptions={displayedSubscriptions} />
 			) : (
 				<SignInPrompt />
 			)}

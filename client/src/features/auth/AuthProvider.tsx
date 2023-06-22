@@ -6,9 +6,10 @@ import {
     useEffect,
     useState,
 } from "react"
-import { useSubscriptions } from "./auth-provider.hooks"
-import { User, UserDataResponse, isUserType } from "./types/auth.types"
+import { useSavedSubscriptions } from "features/quotes/subscriptions.hooks"
+import { User, isUserType } from "./types/auth.types"
 import { UserData } from "./types/user-data.schema"
+import { saveSubscriptions } from "features/quotes/subscriptions.utils"
 
 export type AuthContextValue = {
 	subscriptions: MarketSubscription[]
@@ -43,7 +44,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 		clearSubscriptions,
 		setSubscriptions,
 		subscriptions,
-	} = useSubscriptions()
+	} = useSavedSubscriptions()
 
 	const [user, setUser] = useState<User | null>(null)
     
@@ -51,7 +52,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(null)
         clearSubscriptions()
 		localStorage.removeItem("user")
-		localStorage.removeItem("subscriptions")
 	}
 
     const [controls, setControls] = useState<AuthContextValue["controls"]>({
@@ -64,12 +64,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 			return
 		}
 		const parsedUserData = JSON.parse(userDataLS)
-
-        const subscriptionsDataLS = localStorage.getItem("subscriptions")
-
-        if (subscriptionsDataLS) {
-            setSubscriptions(JSON.parse(subscriptionsDataLS))
-        }
 
 		if (isUserType(parsedUserData)) {
 			setUser(parsedUserData)
@@ -99,18 +93,18 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 			removeUser,
 		})
 		localStorage.setItem("user", JSON.stringify(userInfo))
-		localStorage.setItem("subscriptions", JSON.stringify(userSubcriptions))
+        saveSubscriptions(userSubcriptions)
 	}
 
-    const contextValue = {
-        user,
-        updateUser,
-        controls,
-        subscriptions
-    }
-
 	return (
-		<AuthContext.Provider value={contextValue}>
+		<AuthContext.Provider
+			value={{
+				user,
+				updateUser,
+				controls,
+				subscriptions,
+			}}
+		>
 			{children}
 		</AuthContext.Provider>
 	)

@@ -1,43 +1,29 @@
+import * as Dialog from "@radix-ui/react-dialog"
 import Button from "components/ui/Button"
 import Card from "components/ui/Card"
-import * as Dialog from "@radix-ui/react-dialog"
-import Ticker from "features/ticker/Ticker"
+import DialogContainer from "components/ui/dialog/DialogContainer"
 import { useAuth } from "features/auth/AuthProvider"
 import AuthForm from "features/auth/form/AuthForm"
+import Ticker from "features/ticker/Ticker"
 import SignOutButton from "./SignOutButton"
 
 const NewBidButton = () => {
 	return (
-		<Dialog.Root>
-			<Dialog.Trigger asChild>
-				<Button styleType="primary">New bid</Button>
-			</Dialog.Trigger>
-			<Dialog.Portal>
-				<Dialog.Overlay className="fixed z-20 h-screen w-screen inset-0 bg-gray-950/70" />
-				<Dialog.Content>
-					<Ticker />
-				</Dialog.Content>
-			</Dialog.Portal>
-		</Dialog.Root>
+		<DialogContainer>
+			<Button styleType="primary">New order</Button>
+			<Ticker />
+		</DialogContainer>
 	)
 }
 
 const SignInButton = () => {
 	return (
-		<Dialog.Root>
-			<Dialog.Trigger asChild>
-                <Button styleType="primary">Sign in</Button>
-			</Dialog.Trigger>
-			<Dialog.Portal>
-				<Dialog.Overlay className="fixed z-20 h-screen w-screen inset-0 bg-gray-950/70" />
-				<Dialog.Content>
-					<AuthForm/>
-				</Dialog.Content>
-			</Dialog.Portal>
-		</Dialog.Root>
+        <DialogContainer>
+            <Button styleType="primary">Sign in</Button>
+            <AuthForm />
+        </DialogContainer>
 	)
 }
-
 
 const Header = () => {
 	const { user } = useAuth()
@@ -49,7 +35,9 @@ const Header = () => {
 				<div>
 					{user ? (
 						<div className="flex gap-8 items-center">
-							<p className="text-neutral-900/70 font-semibold">{user.login}</p>
+							<p className="text-neutral-900/70 font-semibold">
+								{user.login}
+							</p>
 							<SignOutButton />
 						</div>
 					) : (

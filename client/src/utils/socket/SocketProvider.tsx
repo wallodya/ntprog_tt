@@ -1,6 +1,7 @@
 import React, { ReactNode, createContext, useContext, useEffect, useMemo } from "react"
 import WSConnector from "./WSClient"
 import { useAuth } from "features/auth/AuthProvider"
+import { MarketDataUpdate } from "models/ServerMessages"
 
 type SocketContextValue = WSConnector
 
@@ -13,7 +14,9 @@ export const useSocket = () => useContext(SocketContext)
 const SocketProvider = ({ children }: { children: ReactNode }) => {
 	const socket = useMemo(() => new WSConnector(), []) 
 
-    const { user } = useAuth()
+    const {
+		user,
+	} = useAuth()
 
     useEffect(() => {
         if (user) {
@@ -23,10 +26,13 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
         return () => {
             if (socket.connection) {
                 socket.disconnect()
+                socket.removeAllListeners()
             }
         }
 
     }, [user, socket])
+
+
 
 	return (
 		<SocketContext.Provider value={socket}>

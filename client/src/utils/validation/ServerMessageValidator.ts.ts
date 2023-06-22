@@ -58,7 +58,6 @@ export class ServerMessageValidator {
 			}
 			case ServerMessageType.marketDataUpdate: {
 				msg = marketDataUpdateMessageSchema.safeParse(envelope.message)
-                console.debug("msg in validator: ", envelope.message)
 				break
 			}
 		}

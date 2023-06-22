@@ -1,4 +1,4 @@
-import DialogContentWrapper from "components/ui/DialogContentWrapper"
+import DialogContentWrapper from "components/ui/dialog/DialogContentWrapper"
 import * as Tabs from "@radix-ui/react-tabs"
 import LoginForm from "./LoginForm"
 import RegisterForm from "./RegisterForm"
