@@ -57,7 +57,6 @@ async def register(user_data: UserDataIn, response: Response) -> UserData:
     summary="Log out",
 )
 def logout(request: Request, response: Response) -> None:
-    print("cookie: ", request.cookies.get(AUTH_COOKIE_NAME))
     remove_auth_cookie(response)
     return
 

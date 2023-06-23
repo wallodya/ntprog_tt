@@ -6,13 +6,15 @@ from app.db.create_data import create_instruments
 
 instrument_router = APIRouter(prefix="/instruments", tags=["Instruments"])
 
+
 @instrument_router.get(
     "/",
-    summary="Get all insturments",
+    summary="Get all instruments",
     description="Returns list of all existing instruments with positions"
 )
 async def get_all_intruments() -> list[InstrumentData]:
     return await Instrument.objects.all()
+
 
 @instrument_router.get(
     "/create",

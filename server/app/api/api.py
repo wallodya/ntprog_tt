@@ -18,6 +18,7 @@ api_router.include_router(order.router)
 api_router.include_router(auth.router)
 api_router.include_router(instrument.router)
 
+
 @api_router.get(
     "/",
     summary="Basic GET endpoint",
@@ -26,6 +27,7 @@ api_router.include_router(instrument.router)
 )
 def get_index():
     return fastapi.responses.HTMLResponse(html)
+
 
 @api_router.websocket("/ws")
 async def connect_to_websocket(websocket: fastapi.WebSocket):

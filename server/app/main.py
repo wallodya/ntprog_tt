@@ -7,7 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://ntprog-tt-ssmf.vercel.app"
 ]
 
 app.include_router(api.router)

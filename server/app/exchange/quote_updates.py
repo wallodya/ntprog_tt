@@ -128,7 +128,7 @@ class UpdateQuotes():
             return (False, self.offer_needs_update())
     
     def bid_needs_update(self) -> bool:
-        return not self.current_quote or self.new_price > self.current_bid_price 
+        return not self.current_quote  or self.new_price > self.current_bid_price 
     
     def offer_needs_update(self) -> bool:
         return not self.current_quote or self.new_price < self.current_offer_price 
