@@ -1,7 +1,6 @@
 import React, { ReactNode, createContext, useContext, useEffect, useMemo } from "react"
 import WSConnector from "./WSClient"
 import { useAuth } from "features/auth/AuthProvider"
-import { MarketDataUpdate } from "models/ServerMessages"
 
 type SocketContextValue = WSConnector
 

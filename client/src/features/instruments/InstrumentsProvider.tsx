@@ -3,7 +3,7 @@ import { isServerHttpException } from "features/auth/types/auth.types"
 import { Instrument } from "models/Base"
 import { ReactNode, createContext, useContext } from "react"
 import { toast } from "react-toastify"
-import instrumentSchema, { instrumentsDataSchema } from "./instrument.schema"
+import { instrumentsDataSchema } from "./instrument.schema"
 
 const fetchInstruments = async (): Promise<Instrument[]> => {
     const url = process.env["REACT_APP_SERVER_URL"]
