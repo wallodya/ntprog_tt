@@ -1,18 +1,16 @@
+import { useAuth } from "features/auth/AuthProvider"
 import { MarketDataUpdate } from "models/ServerMessages"
 import { useEffect, useState } from "react"
 import { useSocket } from "utils/socket/SocketProvider"
-import { MARKET_UPDATE_EVENT_NAME, deleteSubscriptions, getSavedSubscriptions, saveSubscriptions } from "./subscriptions.utils"
-import { useAuth } from "features/auth/AuthProvider"
+import { MARKET_UPDATE_EVENT_NAME } from "./subscriptions.utils"
 
 export const useSavedSubscriptions = () => {
-	// const [subscriptions, setSubscriptions] = useState<MarketDataUpdate[]>(getSavedSubscriptions)
 	const [subscriptions, setSubscriptions] = useState<MarketDataUpdate[]>([])
     const socket = useSocket()
     const { user } = useAuth()
 
 	const removeSubscription = (id: number) => {
 		setSubscriptions(s => s.filter(sub => sub.subscriptionId !== id))
-		// saveSubscriptions(getSavedSubscriptions().filter(sub => sub.subscriptionId !== id))
 	}
 
     const unsubscribe = (subscriptionId: number) => {
@@ -32,13 +30,10 @@ export const useSavedSubscriptions = () => {
 
 	const addSubscription = (sub: MarketDataUpdate) => {
 		setSubscriptions(s => [...s, sub])
-		// saveSubscriptions([...subscriptions, sub])
-        console.debug("Added new subscription: ", sub)
 	}
 
     const setAllSubscriptions = (subs: MarketDataUpdate[]) => {
         setSubscriptions(s => subs)
-        // saveSubscriptions(subs)
     }
 
     const updateSubscription = (data: MarketDataUpdate) => {
@@ -47,7 +42,6 @@ export const useSavedSubscriptions = () => {
         const updatedSubscriptions = subscriptions.map(sub => {
             if (sub.subscriptionId === data.subscriptionId) {
                 wasUpdated = true
-                console.debug("updated existing subscription")
                 return data
             }
             return sub
@@ -55,7 +49,6 @@ export const useSavedSubscriptions = () => {
 
         if (wasUpdated) {
             setSubscriptions(updatedSubscriptions)
-            // saveSubscriptions(updatedSubscriptions)
             return
         }
 
@@ -64,7 +57,6 @@ export const useSavedSubscriptions = () => {
 
 	const clearSubscriptions = () => {
 		setSubscriptions(s => [])
-		// deleteSubscriptions()
 	}
 
 	return {
