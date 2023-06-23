@@ -3,6 +3,7 @@ import Decimal from "decimal.js"
 import { useState } from "react"
 import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form"
 import { OrderSide } from "types/Enums"
+import { useSocket } from "utils/socket/SocketProvider"
 import {
 	RawOrderFormData,
 	OrderFormData,
@@ -10,6 +11,7 @@ import {
 } from "utils/validation/schemas/order-form.schema"
 
 export const useOrderForm = () => {
+    const socket = useSocket()
     const formControls = useForm<RawOrderFormData, any, OrderFormData>({
 		resolver: zodResolver(orderFormSchema),
 		defaultValues: {
@@ -21,7 +23,7 @@ export const useOrderForm = () => {
 	})
 
     const onSubmit: SubmitHandler<OrderFormData> = data => {
-        // socket.placeOrder(data)
+        socket.placeOrder(data)
 	}
 
 	const onError: SubmitErrorHandler<RawOrderFormData> = error => {
