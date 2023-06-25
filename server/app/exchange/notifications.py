@@ -13,7 +13,7 @@ from app.schemas import base
 from app.models.instrument import Instrument
 
 
-class NotificationService():
+class NotificationService:
 
     if TYPE_CHECKING:
         from app.utils.ntpro_server import NTProServer
@@ -34,15 +34,17 @@ class NotificationService():
             await self.check_subscriptions(connection)
 
         self.logger.info(
-            f"Connected clients were notified about '{self.instrument.name}' quotes update"
+            f"""
+                Connected clients were notified about
+                '{self.instrument.name}' quotes update
+            """
         )
 
-    async def check_subscriptions(self, connection: base.Connection) -> bool:
+    async def check_subscriptions(self, connection: base.Connection) -> None:
         for subscription in connection.subscriptions:
             if subscription.instrument.instrument_id == self.instrument.instrument_id:
                 await self.notify_client(subscription, connection)
                 break
-
         return
 
     async def notify_client(
@@ -82,7 +84,7 @@ class NotificationService():
 
         if not self.quotes:
             raise Exception(
-                "Can't construct Market update message until qoutes were obtained"
+                "Can't construct Market update message until quotes were obtained"
             )
 
         return server_messages.MarketDataUpdate(

@@ -11,7 +11,7 @@ from app.crud.base import get_orders_for_page, write_orders_to_csv, remove_file
 
 from app.db.create_data import create_orders
 
-order_router = APIRouter(prefix="/orders",tags=["Orders"])
+order_router = APIRouter(prefix="/orders", tags=["Orders"])
 
 
 @order_router.get(

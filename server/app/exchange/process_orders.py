@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from app.utils.ntpro_server import NTProServer
 
 
-class ProcessOrder():
+class ProcessOrder:
 
     def __init__(self, server: NTProServer, socket: WebSocket, order: Order):
         self.order = order
@@ -86,7 +86,6 @@ class ProcessOrder():
     def set_random_status(self) -> None:
         self.random_status = random.choice(list(OrderStatus))
 
-    
     async def update_position(self) -> None:
 
         if self.side == OrderSide.buy:

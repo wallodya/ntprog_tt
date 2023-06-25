@@ -44,8 +44,10 @@ class PlaceOrder(ClientMessage):
     amount: pydantic.condecimal(gt=decimal.Decimal())
     price: pydantic.condecimal(gt=decimal.Decimal())
 
+
 class CancelOrder(ClientMessage):
     order_id: str
+
 
 _MESSAGE_PROCESSOR_BY_CLASS = {
     SubscribeMarketData: message_processors.subscribe_market_data_processor,

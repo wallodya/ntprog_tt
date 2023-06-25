@@ -9,6 +9,7 @@ class ClientMessageType(enum.IntEnum):
     place_order = enum.auto()
     cancel_order = enum.auto()
 
+
 class ServerMessageType(enum.IntEnum):
     success = enum.auto()
     error = enum.auto()

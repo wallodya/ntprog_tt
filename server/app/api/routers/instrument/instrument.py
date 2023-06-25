@@ -20,7 +20,7 @@ async def get_all_intruments() -> list[InstrumentData]:
     "/create",
     summary="Generate fake instruments",
     description="""
-        Creates few instruments and adds them to databse (for testing purposes)
+        Creates few instruments and adds them to database (for testing purposes)
     """
 )
 async def create_fake_intruments() -> None:

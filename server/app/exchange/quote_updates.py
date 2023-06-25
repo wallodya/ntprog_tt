@@ -12,7 +12,8 @@ if TYPE_CHECKING:
     from app.utils.ntpro_server import NTProServer
     from app.models.order import Order
 
-class UpdateQuotes():
+
+class UpdateQuotes:
 
     def __init__(self, server: NTProServer, order: Order) -> None:
 
@@ -28,7 +29,6 @@ class UpdateQuotes():
         self.current_quote = None
         self.current_bid_price = None
         self.current_offer_price = None
-
 
         self.logger = logging.getLogger("Root.UpdateQuotes")
         self.logger.setLevel(logging.INFO)
@@ -76,7 +76,10 @@ class UpdateQuotes():
             return
 
         self.logger.info(
-            f"Quotes for instrument {self.instrument.name} don't need to be updated"
+            f"""
+                Quotes for instrument {self.instrument.name}
+                don't need to be updated
+            """
         )
         return
 
