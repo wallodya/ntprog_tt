@@ -14,6 +14,17 @@ from app.models.instrument import Instrument
 
 
 class NotificationService:
+    """
+        NotificationService class is used to notify connected clients
+        about quote updates via WebSocket (by sending MarketUpdate messages).
+
+        In normal use case use it like a Command by instantiating, passing server instance
+        and instrument object and calling notify method. This way it'll send notification to all
+        connected clients who subscribed to updates of specified instrument.
+
+        Aside from that you can use static methods "notify_for_all_subscriptions"
+        and "notify_for_new_subscription" to send MarketUpdate message's to only one client
+    """
 
     if TYPE_CHECKING:
         from app.utils.ntpro_server import NTProServer
@@ -31,7 +42,7 @@ class NotificationService:
             f"Notifying about '{self.instrument.name}' quote updates"
         )
         for client, connection in self.server.connections.items():
-            await self.check_subscriptions(connection)
+            await self.__check_subscriptions(connection)
 
         self.logger.info(
             f"""
@@ -40,27 +51,27 @@ class NotificationService:
             """
         )
 
-    async def check_subscriptions(self, connection: base.Connection) -> None:
+    async def __check_subscriptions(self, connection: base.Connection) -> None:
         for subscription in connection.subscriptions:
             if subscription.instrument.instrument_id == self.instrument.instrument_id:
-                await self.notify_client(subscription, connection)
+                await self.__notify_client(subscription, connection)
                 break
         return
 
-    async def notify_client(
+    async def __notify_client(
         self,
         subscription: base.MarketSubscriptionModel,
         connection: base.Connection
     ) -> None:
 
         if not self.quotes:
-            await self.get_quotes()
+            await self.__get_quotes()
 
-        message = self.get_message(subscription.id)
+        message = self.__get_message(subscription.id)
 
-        await self.send_notification(connection.socket, message)
+        await self.__send_notification(connection.socket, message)
 
-    async def send_notification(
+    async def __send_notification(
             self,
             socket: WebSocket,
             message: server_messages.MarketDataUpdate
@@ -68,7 +79,7 @@ class NotificationService:
 
         await self.server.send(message, socket)
 
-    async def get_quotes(self) -> None:
+    async def __get_quotes(self) -> None:
 
         quotes = await Quote.objects.prefetch_related(
             [Quote.offer, Quote.bid]
@@ -80,7 +91,7 @@ class NotificationService:
             map(lambda q: NotificationService.extract_quote_data(q), quotes)
         )
 
-    def get_message(self, subscription_id: int) -> server_messages.MarketDataUpdate:
+    def __get_message(self, subscription_id: int) -> server_messages.MarketDataUpdate:
 
         if not self.quotes:
             raise Exception(
@@ -113,6 +124,13 @@ class NotificationService:
     async def notify_for_all_subscriptions(
         server: NTProServer, connection: base.Connection
     ) -> None:
+        """
+            Use this method to send MarketUpdates to a single client
+            for every subscription it has.
+
+            For example, use it when client just connected, so it
+            receives all market data for its subscriptions right away.
+        """
         for subscription in connection.subscriptions:
             quotes = await Quote.objects.prefetch_related(
                 [Quote.offer, Quote.bid]
@@ -141,6 +159,11 @@ class NotificationService:
 
     @staticmethod
     async def notify_for_new_subscription(server: NTProServer, socket: WebSocket, subscription: MarketSubscription):
+        """
+            Use this to send MarketUpdate to client after he created new subscription.
+            Sends current quote's of the instrument specified in subscription object.
+        """
+
         quotes = await Quote.objects.prefetch_related(
             [Quote.offer, Quote.bid]
         ).filter(
