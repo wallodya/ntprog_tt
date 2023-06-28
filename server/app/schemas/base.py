@@ -14,11 +14,13 @@ def snake_to_camel(snake_str: str) -> str:
         return snake_str
 
     components = snake_str.split('_')
-    return components[0] + ''.join(x.title() for x in components[1:])\
-    
+    return components[0] + ''.join(x.title() for x in components[1:])
+
+
 class OrderData(pydantic.BaseModel):
+
     class Config:
-        schema_extra={
+        schema_extra = {
             "example": {
                 "order_id": "some-unique-order-id",
                 "instrument": "USD/RUB",
@@ -41,6 +43,7 @@ class OrderData(pydantic.BaseModel):
     created_at: int
     updated_at: int
 
+
 class InstrumentData(pydantic.BaseModel):
     class Config:
         orm_mode=True
@@ -56,6 +59,7 @@ class InstrumentData(pydantic.BaseModel):
     instrument_id: int
     buy_position: float
     sell_position: float
+
 
 class UserDataIn(pydantic.BaseModel):
     class Config:
@@ -74,19 +78,21 @@ class UserDataIn(pydantic.BaseModel):
         if len(v) < 4 or len(v) > 20:
             raise pydantic.ValidationError("Login must be at least 4 letters long")
         return v
-        
+
     @pydantic.validator("password")
     def validate_password(cls, v):
         if len(v) < 4 or len(v) > 20:
-            raise pydantic.ValidationError("Login must be at least 4 letters long")     
+            raise pydantic.ValidationError("Login must be at least 4 letters long")
         return v
+
 
 class MarketSubscriptionModel(pydantic.BaseModel):
     class Config:
-        orm_mode=True
+        orm_mode = True
     id: int
     instrument: InstrumentData
-    
+
+
 class UserData(pydantic.BaseModel):
     class Config:
         orm_mode=True
@@ -123,7 +129,6 @@ class Message(pydantic.BaseModel, abc.ABC):
 
     @abc.abstractmethod
     def get_type(self): ...
-
 
 
 class Connection(pydantic.BaseModel):
