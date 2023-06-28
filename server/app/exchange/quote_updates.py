@@ -46,12 +46,12 @@ class UpdateQuotes:
         self.logger.info(
             f"Executing <UpdateQuotes> command for order: {self.new_order.order_id}"
         )
-        await self.set_current_quote()
+        await self.__set_current_quote()
 
         if self.current_quote:
-            self.set_current_prices()
+            self.__set_current_prices()
 
-        bid_outdated, offer_outdated = self.quote_needs_update()
+        bid_outdated, offer_outdated = self.__quote_needs_update()
 
         if bid_outdated:
             self.logger.info(
@@ -61,7 +61,7 @@ class UpdateQuotes:
                     New price: {self.new_price}
                 """
             )
-            await self.create_new_quote(
+            await self.__create_new_quote(
                 self.new_order,
                 self.current_quote.offer if self.current_quote else None
             )
@@ -76,7 +76,7 @@ class UpdateQuotes:
                     New price: {self.new_price}
                 """
             )
-            await self.create_new_quote(
+            await self.__create_new_quote(
                 self.current_quote.bid if self.current_quote else None,
                 self.new_order
             )
@@ -91,7 +91,7 @@ class UpdateQuotes:
         )
         return
 
-    def set_current_prices(self) -> None:
+    def __set_current_prices(self) -> None:
         if self.current_quote.bid:
             self.current_bid_price = self.current_quote.bid.price
         else:
@@ -104,7 +104,7 @@ class UpdateQuotes:
 
         return
 
-    async def set_current_quote(self) -> Quote | None:
+    async def __set_current_quote(self) -> Quote | None:
         self.current_quote = await Quote.objects.prefetch_related(
             [Quote.instrument, Quote.offer, Quote.bid]
         ).filter(
@@ -117,7 +117,7 @@ class UpdateQuotes:
 
         return
     
-    async def create_new_quote(self, bid: Order | None, offer: Order | None) -> Quote:
+    async def __create_new_quote(self, bid: Order | None, offer: Order | None) -> Quote:
         self.logger.debug(
             f"""
                 Creating new quote for instrument '{self.instrument.name}'
@@ -130,18 +130,18 @@ class UpdateQuotes:
             timestamp=time.time() * 1000
         )
     
-    def quote_needs_update(self) -> tuple[bool, bool]:
+    def __quote_needs_update(self) -> tuple[bool, bool]:
 
         if self.side == OrderSide.buy:
-            return (self.bid_needs_update(), False)
+            return self.__bid_needs_update(), False
         
         if self.side == OrderSide.sell:
-            return (False, self.offer_needs_update())
+            return False, self.__offer_needs_update()
     
-    def bid_needs_update(self) -> bool:
-        return not self.current_quote  or self.new_price > self.current_bid_price 
+    def __bid_needs_update(self) -> bool:
+        return not self.current_quote or self.new_price > self.current_bid_price
     
-    def offer_needs_update(self) -> bool:
+    def __offer_needs_update(self) -> bool:
         return not self.current_quote or self.new_price < self.current_offer_price 
 
     async def notify_subscribers(self) -> None:
