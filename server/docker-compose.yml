@@ -3,12 +3,11 @@ version: '3.8'
 services:
   ntprog_web:
     build: .
-    # command: uvicorn app:api --reload --host 0.0.0.0 --port 8000
     command: bash -c 'while !</dev/tcp/ntprog_postgres/5432; do sleep 1; done; uvicorn app.main:app --reload --host 0.0.0.0'
     volumes:
       - .:/app
     ports:
-      - 8008:8000
+      - "8008:8000"
     environment:
       - DATABASE_URL=postgresql://ntprog_user:1234@ntprog_postgres:5432/ntprog_exchange
     depends_on:
@@ -17,8 +16,8 @@ services:
     image: postgres:15-alpine
     volumes:
       - ntprog_data:/var/lib/postgresql/data/
-    expose:
-      - 5432
+    ports:
+      - "5555:5432"
     environment:
       - POSTGRES_USER=ntprog_user
       - POSTGRES_PASSWORD=1234

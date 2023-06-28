@@ -111,10 +111,6 @@ def test_websocket(client: TestClient):
 	with client.websocket_connect("/api/ws", cookies={
 		"authentication": "4b8d1f0d169340df8ab89ecb20bdb160; Path=/; Secure; HttpOnly; Expires=Mon, 26 Jun 2023 14:59:39 GMT;"
 	}) as socket:
-		socket.send_json(
-			{
-				"hello": "world"
-			}
-		)
+
 		data = socket.receive_json()
 		assert data["message_type"] == 4

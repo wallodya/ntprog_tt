@@ -14,7 +14,15 @@ if TYPE_CHECKING:
 
 
 class UpdateQuotes:
+    """
+        Command used for updating quotes when new order is placed.
+        Updates quotes depending on new order's price and side and whether
+        this price is bigger/lower than current quotes bid/offer price
+        (depending on order's side).
 
+        To perform an update instantiate class, passing server instance and order
+        to it's __init__ method and call "execute" method
+    """
     def __init__(self, server: NTProServer, order: Order) -> None:
 
         self.server = server

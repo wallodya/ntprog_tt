@@ -7,6 +7,7 @@ import bidict as bidict
 from app.utils import enums
 from app.schemas.base import Envelope, InstrumentData, Message, QuoteData
 
+
 class ServerMessage(Message):
     def get_type(self: ServerMessageT) -> enums.ServerMessageType:
         return _SERVER_MESSAGE_TYPE_BY_CLASS[self.__class__]
@@ -18,7 +19,6 @@ class ErrorInfo(ServerMessage):
 
 class SuccessInfo(ServerMessage):
     info: str | dict
-
 
 
 class ExecutionReport(ServerMessage):
