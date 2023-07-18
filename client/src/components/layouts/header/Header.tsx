@@ -8,10 +8,10 @@ import SignOutButton from "./SignOutButton"
 const Title = () => {
 	return (
 		<div>
-            <h1 className="font-semibold text-neutral-900/70">
-                Test task for NT Progress
-            </h1>
-        </div>
+            		<h1 className="font-semibold text-neutral-900/70">
+                		Exchange
+            		</h1>
+        	</div>
 	)
 }
 
