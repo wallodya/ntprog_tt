@@ -8,7 +8,8 @@ app = FastAPI()
 
 origins = [
     "http://localhost:3000",
-    "https://ntprog-tt-ssmf.vercel.app"
+    "https://ntprog-tt-ssmf.vercel.app",
+    "https://ntprog-tt.vercel.app"
 ]
 
 app.include_router(api.router)
